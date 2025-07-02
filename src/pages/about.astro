@@ -4,6 +4,7 @@ import Content from "../components/Content.astro";
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/Footer.astro";
 ---
 
 <!doctype html>
@@ -18,51 +19,59 @@ import { Button } from "@/components/ui/button";
                 <div
                     class="bg-gray-700 bg-opacity-50 text-center py-3 rounded-lg mb-16 mt-6 text-gray-300"
                 >
-                    Hello :V !
+                    Hello, I'm a developer from Indonesia!
                 </div>
 
                 <section
-                    class="flex flex-col md:flex-row items-center justify-between mb-20"
+                    class="flex flex-col md:flex-row items-center justify-between mb-10"
                 >
                     <div class="text-center md:text-left md:mr-10 mb-8 md:mb-0">
                         <h1 class="text-5xl font-bold mb-2">
-                            Takuya Matsuyama
+                            Dimas Tri Mustakim
                         </h1>
                         <p class="text-xl text-gray-400">
-                            Digital Craftsman ( Artist / Developer / Designer )
+                            Developer & Digital Craftsman
                         </p>
+                        <p class="text-xl text-gray-400">me@dimastri.com</p>
                     </div>
                     <div class="flex-shrink-0">
                         <img
                             src="/images/firebase.png"
-                            alt="Takuya Matsuyama"
+                            alt="Dimas Tri Mustakim"
                             class="rounded-full w-48 h-48 object-cover shadow-lg"
                         />
                     </div>
                 </section>
 
-                <section class="mb-20 text-justify">
-                    <h2 class="text-3xl font-bold mb-6">Work</h2>
+                <section class="mb-10 text-justify">
+                    <h2 class="text-3xl font-bold mb-3">Work</h2>
                     <p
-                        class="text-lg leading-relaxed dark:text-gray-300 text-gray-800 mb-8"
+                        class="indent-14 text-lg leading-relaxed dark:text-gray-300 text-gray-800 mb-4"
                     >
-                        Takuya is a freelance and a full-stack developer based
-                        in Osaka with a passion for building digital
-                        services/stuff he wants. He has a knack for all things
-                        launching products, from planning and designing all the
-                        way to solving real-life problems with code. When not
-                        on-line, he loves hanging out with his camera.
-                        Currently, he is living off of his own product called <a
-                            href="#"
-                            class="highlight-text underline">Inkdrop</a
-                        >. He publishes content for market-ing his products and
-                        his YouTube channel called <a
-                            href="#"
-                            class="highlight-text underline">"Dev as Life"</a
-                        > has more than 100k subscribers.
+                        I am a passionate developer eager to learn and grow in
+                        the field. I thrive in both collaborative group
+                        environments and independent work settings. My ultimate
+                        career goal is to become an exceptional software
+                        engineer, dedicated to building cutting-edge
+                        technologies. I possess a knack for quickly adapting to
+                        new technologies through leveraging various available
+                        resources.
+                    </p>
+
+                    <p
+                        class="indent-14 text-lg leading-relaxed dark:text-gray-300 text-gray-800 mb-8"
+                    >
+                        I am well versed in backend development, devops, and
+                        cloud infrastructure. I am proficient in programming
+                        languages such as Python, Go and Javascript/Typescript.
+                        I also enjoy building things using different tech stack.
+                        Beyond technical skills, I actively seek opportunities
+                        to develop my management and interpersonal skills.
+                        Throughout my career and studies, I have gained gained
+                        valuable experience by working on various projects.
                     </p>
                     <div class="flex justify-center">
-                        <Button variant="default" className="mx-auto"
+                        <Button variant="default" className="mx-auto font-bold"
                             ><a href="#"
                                 >Contact Me! <span class="ml-2">&gt;</span></a
                             ></Button
@@ -70,44 +79,41 @@ import { Button } from "@/components/ui/button";
                     </div>
                 </section>
 
-                <section class="mb-20">
-                    <h2 class="text-3xl font-bold mb-6">Bio</h2>
-                    <div class="space-y-4 text-gray-300">
+                <section class="mb-10">
+                    <h2 class="text-3xl font-bold mb-3">Bio</h2>
+                    <div class="space-y-2 text-gray-300">
                         <p class="pl-14 -indent-14">
                             <span class="font-semibold text-gray-100 mr-4"
-                                >1984</span
-                            > Born in Osaka (大阪), Japan.
+                                >2020-2024</span
+                            > Education at Brawijaya University, Computer Science
+                            Major.
                         </p>
                         <p class="pl-14 -indent-14">
                             <span class="font-semibold text-gray-100 mr-4"
-                                >2010</span
-                            > Completed the Master's Program in the Graduate School
-                            of Information Science at Nara Institute of Science and
-                            Technology (奈良先端科学技術大学院大学情報科学研究科修士課程)
-                        </p>
-                        <p class="pl-14 -indent-14">
-                            <span class="font-semibold text-gray-100 mr-4"
-                                >2010</span
-                            > Worked at Yahoo! Japan (ヤフー株式会社入社)
-                        </p>
-                        <p class="pl-14 -indent-14">
-                            <span class="mr-4 font-semibold text-gray-100"
-                                >2012 to present</span
-                            > Working as a freelancer
+                                >2024-Now</span
+                            > Junior Developer at CIMB Niaga.
                         </p>
                     </div>
                 </section>
 
-                <section>
-                    <h2 class="text-3xl font-bold mb-6">I ❤️</h2>
-                    <p class="text-lg text-gray-300">
-                        Art, Music, <span class="highlight-text">Drawing</span>,
-                        Playing Drums, <span class="highlight-text"
-                            >Photography</span
-                        >, Leica, Machine Learning
+                <section class="mb-10">
+                    <h2 class="text-3xl font-bold mb-3">I ❤️</h2>
+                    <p class="indent-14 text-lg text-gray-300">
+                        My hobbies are quite diverse, and I particularly enjoy
+                        building things using a wide range of tech stacks. I
+                        love exploring various tech-related subjects, trying out
+                        different technologies, and creating small projects. In
+                        my free time, I find joy in experimenting with and
+                        utilizing different programming languages, deploying and
+                        exploring a variety of open-source applications that
+                        catch my attention, and building my own mini-lab on my
+                        computer. Additionally, I also like playing games,
+                        reading books, manga, and watching movies, anime, as
+                        well as youtube.
                     </p>
                 </section>
             </Content>
+            <Footer />
         </main>
     </body>
 </html>
