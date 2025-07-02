@@ -22,6 +22,7 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<!-- <link rel="icon" type="image/x-icon" href="/favicon.ico" /> -->
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link
     rel="alternate"
@@ -45,6 +46,16 @@ const { title, description, image = FallbackImage } = Astro.props;
     as="font"
     type="font/woff"
     crossorigin
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;700&family=M+PLUS+Rounded+1c:wght@300;700&display=swap"
+    rel="stylesheet"
+/>
+<link
+    href="https://cdnjs.cloudflare.com/ajax/libs/hack-font/3.3.0/web/hack.css"
+    rel="stylesheet"
 />
 
 <!-- Canonical URL -->

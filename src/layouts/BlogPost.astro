@@ -20,7 +20,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
     <body>
         <Header />
         <style is:global>
-            @reference "../app.css";
+            @reference "../styles/global.css";
             main article.markdown-body {
                 ul {
                     @apply list-disc list-inside pl-4 mb-4;
@@ -71,6 +71,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
                         )
                     }
                 </div>
+                <h1 class="text-3xl my-1 font-mplus">{title}</h1>
                 <div class="date">
                     <FormattedDate date={pubDate} />
                     {
@@ -82,7 +83,6 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
                         )
                     }
                 </div>
-                <h1 class="text-3xl my-1 font-mplus">{title}</h1>
                 <hr class="border-top border-zinc-400 my-4" />
                 <slot />
             </Content>

@@ -6,6 +6,9 @@ module.exports = {
         extend: {
             fontFamily: {
                 mplus: ["'proxima-soft'", "Verdana", "sans-serif"],
+                inter: ["Inter", "sans-serif"],
+                hack: ["Hack", "monospace"],
+                mpl: ["M PLUS Rounded 1c", "sans-serif"],
             },
         },
     },

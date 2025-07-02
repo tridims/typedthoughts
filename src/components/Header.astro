@@ -3,18 +3,20 @@ import HeaderLink from "./HeaderLink.astro";
 import { SITE_TITLE } from "../consts";
 import { IoLogoGithub } from "react-icons/io5";
 import ThemeToggle from "./ThemeToggleButton";
+import Logo from "./Logo.astro";
 ---
 
 <header class="fixed w-full p-2 z-20 backdrop-blur-md">
     <div class="mx-auto max-w-3xl">
         <nav class="flex items-center gap-3 text-base">
-            <a href="/" class="group">
+            <Logo />
+            <!-- <a href="/" class="group">
                 <h2
                     class="font-semibold tracking-tighter p-2 font-mplus text-lg"
                 >
                     Dimas Tri Mustakim
                 </h2>
-            </a>
+            </a> -->
             <div class="items-center gap-6 hidden md:flex">
                 <HeaderLink href="dimastri.com">About</HeaderLink>
                 <HeaderLink href="github.com/tridims" target="_blank"
