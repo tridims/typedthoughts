@@ -67,6 +67,8 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
                                 height={510}
                                 src={heroImage}
                                 alt=""
+                                transition:name={title}
+                                transition:animate="slide"
                             />
                         )
                     }
