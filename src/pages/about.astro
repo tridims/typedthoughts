@@ -17,12 +17,12 @@ import Footer from "@/components/Footer.astro";
         <main class="container mx-auto pt-[56px]">
             <Content>
                 <div
-                    class="bg-gray-800 bg-opacity-40 backdrop-blur-2xl text-center py-3 rounded-lg mb-16 mt-6"
+                    class="bg-secondary bg-opacity-40 backdrop-blur-2xl text-center py-3 rounded-lg mb-16 mt-6"
                 >
                     <div
-                        class="text-gray-300 font-title font-bold drop-shadow-lg shadow-black"
+                        class="font-title font-bold drop-shadow-lg shadow-black"
                     >
-                        Hello, I'm a <span class="text-orange-400"
+                        Hello, I'm a <span class="text-secondary-foreground"
                             >developer</span
                         > from Indonesia!
                     </div>
@@ -32,13 +32,17 @@ import Footer from "@/components/Footer.astro";
                     class="flex flex-col md:flex-row items-center justify-between mb-10"
                 >
                     <div class="text-center md:text-left md:mr-10 mb-8 md:mb-0">
-                        <h1 class="text-5xl font-bold mb-2 text-gray-100">
+                        <h1
+                            class="text-5xl font-bold mb-2 text-primary-background"
+                        >
                             Dimas Tri Mustakim
                         </h1>
-                        <p class="text-xl text-gray-400">
+                        <p class="text-xl text-secondary-foreground">
                             Developer & Digital Craftsman
                         </p>
-                        <p class="text-xl text-gray-400">me@dimastri.com</p>
+                        <p class="text-xl text-secondary-foreground">
+                            me@dimastri.com
+                        </p>
                     </div>
                     <div class="flex-shrink-0">
                         <img
@@ -87,24 +91,21 @@ import Footer from "@/components/Footer.astro";
 
                 <section class="mb-10">
                     <h2 class="text-3xl font-bold mb-3">Bio</h2>
-                    <div class="space-y-2 text-gray-300">
+                    <div class="space-y-2">
                         <p class="pl-14 -indent-14">
-                            <span class="font-semibold text-gray-100 mr-4"
-                                >2020-2024</span
-                            > Education at Brawijaya University, Computer Science
-                            Major.
+                            <span class="font-semibold mr-4">2020-2024</span> Education
+                            at Brawijaya University, Computer Science Major.
                         </p>
                         <p class="pl-14 -indent-14">
-                            <span class="font-semibold text-gray-100 mr-4"
-                                >2024-Now</span
-                            > Junior Developer at CIMB Niaga.
+                            <span class="font-semibold mr-4">2024-Now</span> Junior
+                            Developer at CIMB Niaga.
                         </p>
                     </div>
                 </section>
 
                 <section class="mb-10">
                     <h2 class="text-3xl font-bold mb-3">I ❤️</h2>
-                    <p class="indent-14 text-lg text-gray-300">
+                    <p class="indent-14 text-lg">
                         My hobbies are quite diverse, and I particularly enjoy
                         building things using a wide range of tech stacks. I
                         love exploring various tech-related subjects, trying out
