@@ -5,10 +5,9 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                mplus: ["'proxima-soft'", "Verdana", "sans-serif"],
-                inter: ["Inter", "sans-serif"],
-                hack: ["Hack", "monospace"],
-                mpl: ["M PLUS Rounded 1c", "sans-serif"],
+                rubik: ["Rubik", "sans-serif"],
+                karla: ["Karla", "sans-serif"],
+                title: ["Rubik", "sans-serif"],
             },
         },
     },

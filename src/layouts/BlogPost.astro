@@ -30,7 +30,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
                 h3,
                 h4,
                 h5 {
-                    @apply font-bold font-mplus mb-2;
+                    @apply font-bold font-title mb-2;
                 }
                 h1 {
                     @apply text-4xl;
@@ -71,7 +71,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
                         )
                     }
                 </div>
-                <h1 class="text-3xl my-1 font-mplus">{title}</h1>
+                <h1 class="text-3xl my-1 font-title">{title}</h1>
                 <div class="date">
                     <FormattedDate date={pubDate} />
                     {
