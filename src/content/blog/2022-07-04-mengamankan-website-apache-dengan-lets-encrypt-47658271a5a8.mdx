@@ -5,20 +5,14 @@ updatedDate: 2022-07-04T15:57:12.347+0700
 categories: [""]
 tags: ["ssl-certificate","certbot","lets-encrypt"]
 description: "Artikel ini merupakan lanjutan artikel saya sebelumnya yang membahas langkah untuk self sign sertifikat ssl."
-heroImage: '../../assets/47658271a5a8/0A0vNi0z3xntNQl2T.jpg'
+heroImage: 
+    image: '../../assets/47658271a5a8/0A0vNi0z3xntNQl2T.jpg'
+    source: 'https://unsplash.com/@towfiqu999999?utm_source=medium&utm_medium=referral'
+    owner: 'Towfiqu barbhuiya'
 post: 'https://tridims.medium.com/mengamankan-website-apache-dengan-lets-encrypt-47658271a5a8'
 ---
 
-### Mengamankan Website Apache dengan Let’s Encrypt
-
-
-![Photo by [Towfiqu barbhuiya](https://unsplash.com/@towfiqu999999?utm_source=medium&utm_medium=referral) on Unsplash](../../assets/47658271a5a8/0A0vNi0z3xntNQl2T.jpg)
-
-Photo by [Towfiqu barbhuiya](https://unsplash.com/@towfiqu999999?utm_source=medium&utm_medium=referral) on Unsplash
-
-Artikel ini merupakan lanjutan artikel saya sebelumnya yang membahas langkah untuk self sign sertifikat ssl\.
-
-Let’s Encrypt merupakan Certificate Authority yang menyediakan sertifikat TLS/SSL secara gratis\. Mereka menyediakan sebuah tool bernama Certbot untuk memudahkan dan mengotomatiskan langkah yang diperlukan untuk mendapatkan sertifikat\.
+Let's Encrypt merupakan Certificate Authority yang menyediakan sertifikat TLS/SSL secara gratis\. Mereka menyediakan sebuah tool bernama Certbot untuk memudahkan dan mengotomatiskan langkah yang diperlukan untuk mendapatkan sertifikat\.
 
 Letsencrypt hanya mau mengisukan sertifikat ke website yang telah punya nama domain, sehingga saya perlu untuk mendapatkannya\. Saya menggunakan domain yang disediakan name\.com dengan nama domain dimastri\.ninja\. Untuk melakukan praktik ini, saya reset kembali konfigurasi apache2 dan setelah itu saya konfigurasi virtual host dari apache untuk menggunakan nama domain yang saya miliki menjadi seperti screenshot berikut\.
 
