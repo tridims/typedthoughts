@@ -33,22 +33,31 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
                     @apply font-bold font-title mb-2;
                 }
                 h1 {
-                    @apply text-4xl;
+                    @apply scroll-m-20 text-4xl font-extrabold tracking-tight text-balance;
                 }
                 h2 {
-                    @apply text-2xl;
+                    @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;
                 }
                 h3 {
-                    @apply text-xl;
+                    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
                 }
                 h4 {
-                    @apply text-lg;
+                    @apply scroll-m-20 text-xl font-semibold tracking-tight;
+                }
+                p {
+                    @apply leading-7 [&:not(:first-child)]:mt-6;
+                }
+                blockquote {
+                    @apply mt-6 border-l-2 pl-6 italic;
+                }
+                ul {
+                    @apply my-6 ml-6 list-disc [&>li]:mt-2;
+                }
+                code {
+                    @apply bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
                 }
                 img {
                     @apply border border-slate-300 dark:border-zinc-700 rounded-xl mb-6 mx-auto;
-                }
-                p {
-                    @apply mb-3 mt-4;
                 }
                 a {
                     @apply underline underline-offset-2 hover:text-orange-500 decoration-orange-500;
@@ -73,8 +82,8 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
                         )
                     }
                 </div>
-                <h1 class="text-3xl my-1 font-title">{title}</h1>
-                <div class="date">
+                <h1 class="mt-1 font-title">{title}</h1>
+                <div class="date text-muted-foreground">
                     <FormattedDate date={pubDate} />
                     {
                         updatedDate && (
@@ -85,6 +94,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
                         )
                     }
                 </div>
+                <p class="text-muted-foreground text-xl">{description}</p>
                 <hr class="border-top border-zinc-400 my-4" />
                 <slot />
             </Content>
