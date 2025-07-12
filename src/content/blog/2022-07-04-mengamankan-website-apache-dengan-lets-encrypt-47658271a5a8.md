@@ -1,0 +1,96 @@
+---
+title: "Mengamankan Website Apache dengan Let’s Encrypt"
+pubDate: 2022-07-04T15:57:12.347+0700
+updatedDate: 2022-07-04T15:57:12.347+0700
+categories: [""]
+tags: ["ssl-certificate","certbot","lets-encrypt"]
+description: "Artikel ini merupakan lanjutan artikel saya sebelumnya yang membahas langkah untuk self sign sertifikat ssl."
+heroImage: '../../assets/47658271a5a8/0A0vNi0z3xntNQl2T.jpg'
+post: 'https://tridims.medium.com/mengamankan-website-apache-dengan-lets-encrypt-47658271a5a8'
+---
+
+### Mengamankan Website Apache dengan Let’s Encrypt
+
+
+![Photo by [Towfiqu barbhuiya](https://unsplash.com/@towfiqu999999?utm_source=medium&utm_medium=referral) on Unsplash](../../assets/47658271a5a8/0A0vNi0z3xntNQl2T.jpg)
+
+Photo by [Towfiqu barbhuiya](https://unsplash.com/@towfiqu999999?utm_source=medium&utm_medium=referral) on Unsplash
+
+Artikel ini merupakan lanjutan artikel saya sebelumnya yang membahas langkah untuk self sign sertifikat ssl\.
+
+Let’s Encrypt merupakan Certificate Authority yang menyediakan sertifikat TLS/SSL secara gratis\. Mereka menyediakan sebuah tool bernama Certbot untuk memudahkan dan mengotomatiskan langkah yang diperlukan untuk mendapatkan sertifikat\.
+
+Letsencrypt hanya mau mengisukan sertifikat ke website yang telah punya nama domain, sehingga saya perlu untuk mendapatkannya\. Saya menggunakan domain yang disediakan name\.com dengan nama domain dimastri\.ninja\. Untuk melakukan praktik ini, saya reset kembali konfigurasi apache2 dan setelah itu saya konfigurasi virtual host dari apache untuk menggunakan nama domain yang saya miliki menjadi seperti screenshot berikut\.
+
+
+![](../../assets/47658271a5a8/0QTInsSJdKwfNY8U.png)
+
+
+Sehingga website tersebut dapat dibuka menggunakan nama domain seperti ini\.
+
+
+![](../../assets/47658271a5a8/0LXfLk2dByNd6SiS_.png)
+
+
+Kemudian berikut langkah setup SSL/TLS dengan certbot yang saya lakukan\.
+
+**1\. Install Certbot**
+
+Dapat diinstall menggunakan perintah berikut
+
+```bash
+sudo apt install certbot python3-certbot-apache
+```
+
+**2\. Cek konfigurasi Apache Virtual Host**
+
+Disini perlu dicek konfigurasi Virtual Host yang digunakan, tepatnya pada parameter ServerName dan ServerAlias karena akan digunakan oleh Certbot untuk mengetahui domain yang digunakan\. Disini sudah saya periksa dan benar karena juga sudah diatur saat menambahkan domain\.
+
+**3\. Memperbolehkan HTTPS di Firewall**
+
+Disini kita perlu mengatur firewall untuk memperbolehkan protokol HTTPS\. Disini firewall ufw di EC2 yang digunakan tidak diaktifkan dan pilihan untuk memperbolehkan protokol HTTPS sudah dipilih saat membuat mesin EC2 di AWS\.
+
+```bash
+sudo ufw allow 'Apache Full'
+```
+
+**4\. Mendapatkan Sertifikat SSL**
+
+Untuk mendapatkan sertifikat dari LetsEncrypt untuk apache, digunakan perintah berikut\.
+
+```bash
+sudo certbot --apache
+```
+
+Setelah itu akan diminta untuk memasukkan beberapa informasi dan pilihan yang akan digunakan oleh Certbot dan diakhir ketika sukses akan ditampilkan pesan seperti berikut\.
+
+
+![Sertifikat](../../assets/47658271a5a8/0BXFTojVyRzfs_N4d.png)
+
+
+**5\. Verifying Certbot Auto\-Renewal**
+
+
+![](../../assets/47658271a5a8/0BK3FOsbZNyt_Xh0p.png)
+
+
+**6\. Testing**
+
+
+![](../../assets/47658271a5a8/0TTog_e2WqjaKgY7k.png)
+
+
+
+![](../../assets/47658271a5a8/0V8AIkiVIH2thV1QW.png)
+
+
+Detail dari Sertifikat memiliki Hierarki seperti screenshot berikut
+
+![](../../assets/47658271a5a8/0GUoekcXfBH7Xom3c.png)
+
+
+**Daftar Pustaka**
+
+**How To Secure Apache with Let’s Encrypt on Ubuntu 18\.04 \| DigitalOcean**
+
+How To Secure Apache with Let’s Encrypt on Ubuntu 18\.04 \| DigitalOcean\. \(2022\) \. Retrieved 27 April 2022, from [https://www\.digitalocean\.com/community/tutorials/how\-to\-secure\-apache\-with\-let\-s\-encrypt\-on\-ubuntu\-18\-04](https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-18-04)
