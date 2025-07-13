@@ -30,7 +30,7 @@ const posts = (await getCollection("blog")).sort(
                                         <Image
                                             width={720}
                                             height={360}
-                                            src={post.data.heroImage}
+                                            src={post.data.heroImage.image}
                                             alt=""
                                         />
                                     )}
