@@ -1,54 +1,8 @@
 ---
+import Greeting from "./react/Greeting";
+
 const isProd = import.meta.env.PROD;
-// const baseAssetUrl = "https://craftzdog.global.ssl.fastly.net/uses";
 const baseAssetUrl = "";
-
-interface Greeting {
-    main: string;
-    secondary: string;
-    secondary_two: string;
-}
-
-const greetings: Greeting[] = [
-    {
-        main: "Welcome, digital traveler! 🚀",
-        secondary: "Welcome to",
-        secondary_two: "my corner of the internet! 🌍",
-    },
-    {
-        main: "Hey there, friend! 👋",
-        secondary: "Welcome to",
-        secondary_two: "my corner of the internet!",
-    },
-    {
-        main: "Hello, world! 🌍",
-        secondary: "Let's dive into something",
-        secondary_two: "interesting today.",
-    },
-    {
-        main: "Hi and welcome! 😊",
-        secondary: "I'm so glad you're",
-        secondary_two: "here.",
-    },
-    {
-        main: "Hey you! 👀",
-        secondary: "Thanks for stopping by —",
-        secondary_two: "you're in for a treat.",
-    },
-    {
-        main: "Greetings, curious minds! 🧠",
-        secondary: "Let's learn and",
-        secondary_two: "grow together.",
-    },
-    {
-        main: "Hey hey! 🎉",
-        secondary: "Ready to read",
-        secondary_two: "something cool?",
-    },
-];
-
-// Pick a random greeting
-const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
 ---
 
 <section class="relative mb-6 h-80 flex justify-center items-center">
@@ -61,31 +15,11 @@ const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
             loop="loop"
             playsinline
         >
-            <!-- <source
-                src={baseAssetUrl + "/masthead.webm"}
-                type="video/webm; codecs=vp9"
-            />
-            <source
-                src={baseAssetUrl + "/masthead.m4v"}
-                type="video/mp4; codecs=hvc1"
-            /> -->
-            <!-- <source
-                src={baseAssetUrl + "/masthead_2.mp4"}
-                type="video/mp4; codecs=avc1.42E01E"
-            /> -->
             <source
                 src={baseAssetUrl + "/masthead_1.mp4"}
                 type="video/mp4; codecs=avc1.42E01E"
             />
         </video>
     </div>
-    <div class="z-10 text-center px-8 drop-shadow-lg shadow-black">
-        <div class="uppercase text-sm mb-4 font-title">
-            {randomGreeting.main}
-        </div>
-        <div class="text-4xl font-title font-medium">
-            {randomGreeting.secondary}
-            <span class="text-orange-500"> {randomGreeting.secondary_two}</span>
-        </div>
-    </div>
+    <Greeting client:load />
 </section>
