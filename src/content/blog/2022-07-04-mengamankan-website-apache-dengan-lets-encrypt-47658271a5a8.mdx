@@ -28,7 +28,7 @@ Sehingga website tersebut dapat dibuka menggunakan nama domain seperti ini\.
 
 Kemudian berikut langkah setup SSL/TLS dengan certbot yang saya lakukan\.
 
-**1\. Install Certbot**
+### **1\. Install Certbot**
 
 Dapat diinstall menggunakan perintah berikut
 
@@ -36,11 +36,11 @@ Dapat diinstall menggunakan perintah berikut
 sudo apt install certbot python3-certbot-apache
 ```
 
-**2\. Cek konfigurasi Apache Virtual Host**
+### **2\. Cek konfigurasi Apache Virtual Host**
 
 Disini perlu dicek konfigurasi Virtual Host yang digunakan, tepatnya pada parameter ServerName dan ServerAlias karena akan digunakan oleh Certbot untuk mengetahui domain yang digunakan\. Disini sudah saya periksa dan benar karena juga sudah diatur saat menambahkan domain\.
 
-**3\. Memperbolehkan HTTPS di Firewall**
+### **3\. Memperbolehkan HTTPS di Firewall**
 
 Disini kita perlu mengatur firewall untuk memperbolehkan protokol HTTPS\. Disini firewall ufw di EC2 yang digunakan tidak diaktifkan dan pilihan untuk memperbolehkan protokol HTTPS sudah dipilih saat membuat mesin EC2 di AWS\.
 
@@ -48,7 +48,7 @@ Disini kita perlu mengatur firewall untuk memperbolehkan protokol HTTPS\. Disini
 sudo ufw allow 'Apache Full'
 ```
 
-**4\. Mendapatkan Sertifikat SSL**
+### **4\. Mendapatkan Sertifikat SSL**
 
 Untuk mendapatkan sertifikat dari LetsEncrypt untuk apache, digunakan perintah berikut\.
 
@@ -68,7 +68,7 @@ Setelah itu akan diminta untuk memasukkan beberapa informasi dan pilihan yang ak
 ![](../../assets/47658271a5a8/0BK3FOsbZNyt_Xh0p.png)
 
 
-**6\. Testing**
+### **6\. Testing**
 
 
 ![](../../assets/47658271a5a8/0TTog_e2WqjaKgY7k.png)
@@ -83,7 +83,7 @@ Detail dari Sertifikat memiliki Hierarki seperti screenshot berikut
 ![](../../assets/47658271a5a8/0GUoekcXfBH7Xom3c.png)
 
 
-**Daftar Pustaka**
+## **Daftar Pustaka**
 
 **How To Secure Apache with Let’s Encrypt on Ubuntu 18\.04 \| DigitalOcean**
 
