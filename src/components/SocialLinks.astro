@@ -1,0 +1,52 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { FaLinkedin, FaMedium, FaGithub } from "react-icons/fa";
+
+interface Props extends HTMLAttributes<"div"> {
+    showLabels?: boolean;
+}
+
+const { class: className = "", showLabels = false, ...props } = Astro.props;
+
+const socialLinks = [
+    {
+        name: "GitHub",
+        url: "https://github.com/tridims",
+        icon: FaGithub,
+        color: "hover:text-gray-900 dark:hover:text-gray-100",
+    },
+    {
+        name: "LinkedIn",
+        url: "https://linkedin.com/in/dimastrim",
+        icon: FaLinkedin,
+        color: "hover:text-blue-600",
+    },
+    {
+        name: "Medium",
+        url: "https://medium.com/@tridims",
+        icon: FaMedium,
+        color: "hover:text-green-600",
+    },
+];
+---
+
+<div class={`flex items-center gap-4 ${className}`} {...props}>
+    {
+        socialLinks.map(({ name, url, icon: Icon, color }) => (
+            <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class={`group flex items-center gap-2 text-secondary-foreground transition-colors duration-200 ${color}`}
+                aria-label={`Visit my ${name} profile`}
+            >
+                <Icon className="text-xl" />
+                {showLabels && (
+                    <span class="text-sm font-medium group-hover:underline">
+                        {name}
+                    </span>
+                )}
+            </a>
+        ))
+    }
+</div>
