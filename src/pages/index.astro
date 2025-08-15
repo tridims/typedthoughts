@@ -7,6 +7,7 @@ import { getCollection } from "astro:content";
 import Masthead from "@/components/Masthead.astro";
 import Content from "@/components/Content.astro";
 import RevealOnScroll from "@/components/react/RevealOnScroll";
+import MagicBento from "@/components/react/MagicBento";
 import FormattedDate from "@/components/FormattedDate.astro";
 import { Image } from "astro:assets";
 
@@ -43,38 +44,32 @@ const posts = (await getCollection("blog")).sort(
                     </RevealOnScroll>
                 </section>
                 <section>
-                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {
-                            posts.map((post) => {
-                                const heroImage = post.data.heroImage;
-                                return (
-                                    <li class="text-center mb-4">
-                                        <a href={`/blog/${post.id}/`}>
-                                            <Image
-                                                class="border border-slate-300 dark:border-zinc-700 rounded-xl object-cover max-h-48"
-                                                width={720}
-                                                height={360}
-                                                src={post.data.heroImage.image}
-                                                alt="Thumbnail"
-                                                transition:name={
-                                                    post.data.title
-                                                }
-                                                transition:animate="slide"
-                                            />
-                                            <h4 class="mt-3 text-xl font-bold font-title">
-                                                {post.data.title}
-                                            </h4>
-                                            <p class="date opacity-70">
-                                                <FormattedDate
-                                                    date={post.data.pubDate}
-                                                />
-                                            </p>
-                                        </a>
-                                    </li>
-                                );
-                            })
-                        }
-                    </ul>
+                    <MagicBento
+                        client:visible
+                        items={posts.map((post) => ({
+                            title: post.data.title,
+                            description: post.data.description,
+                            href: `/blog/${post.id}/`,
+                            imageSrc:
+                                post.data.heroImage.image.src ?? undefined,
+                            dateText: new Date(
+                                post.data.pubDate
+                            ).toLocaleDateString(undefined, {
+                                year: "numeric",
+                                month: "short",
+                                day: "2-digit",
+                            }),
+                        }))}
+                        columns={1}
+                        textAutoHide={false}
+                        enableStars={true}
+                        enableBorderGlow={true}
+                        enableTilt={true}
+                        enableMagnetism={true}
+                        clickEffect={true}
+                        particleCount={12}
+                        glowColor="var(--color-primary)"
+                    />
                 </section>
             </Content>
         </main>
