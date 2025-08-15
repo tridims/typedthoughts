@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
 
 interface Greeting {
     main: string;
@@ -45,25 +46,100 @@ const greetings: Greeting[] = [
 ];
 
 export default function Greeting() {
-    const [greeting, setGreeting] = useState<Greeting>(greetings[0]);
+    // Track greeting by index for simpler cycling
+    const [index, setIndex] = useState<number>(0);
+    const containerRef = useRef<HTMLDivElement>(null);
 
+    // Pick a random initial greeting on mount
     useEffect(() => {
-        const randomGreeting =
-            greetings[Math.floor(Math.random() * greetings.length)];
-        setGreeting(randomGreeting);
+        setIndex(Math.floor(Math.random() * greetings.length));
     }, []);
 
+    // Animate in per-character whenever the greeting index changes
+    useEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+        const ctx = gsap.context(() => {
+            const chars = el.querySelectorAll(".tt-char");
+            if (!chars.length) return;
+            // Prepare will-change for smoother animation
+            gsap.set(chars, { willChange: "transform, opacity" });
+            // Match requested style: from { opacity: 0, y: 40 } to visible
+            gsap.fromTo(
+                chars,
+                { y: 12, opacity: 0 }, // shorter travel
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8, // faster intro
+                    ease: "power3.out",
+                    stagger: 0.01, // 10ms
+                    onComplete: () => {
+                        gsap.set(chars, { clearProps: "willChange" });
+                    },
+                },
+            );
+        }, containerRef);
+        return () => ctx.revert();
+    }, [index]);
+
+    // Every 3s, animate out per-character then switch to next greeting
+    useEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+        const interval = window.setInterval(() => {
+            const chars = el.querySelectorAll(".tt-char");
+            if (!chars.length) {
+                // Fallback: advance anyway
+                setIndex((prev) => (prev + 1) % greetings.length);
+                return;
+            }
+            gsap.killTweensOf(chars);
+            gsap.to(chars, {
+                y: -12, // shorter travel out
+                opacity: 0,
+                duration: 0.2, // faster exit
+                ease: "power3.in",
+                stagger: 0.005,
+                onComplete: () => {
+                    setIndex((prev) => (prev + 1) % greetings.length);
+                },
+            });
+        }, 3000);
+
+        return () => {
+            window.clearInterval(interval);
+            // Kill any running tweens on unmount
+            gsap.killTweensOf(el.children);
+        };
+    }, []);
+
+    const greeting = greetings[index];
+
+    // Util: split a string into individually wrapped characters for GSAP
+    const renderChars = (text: string, extraClass = "") => {
+        return (
+            <span className="tt-line whitespace-pre">
+                {Array.from(text).map((ch, i) => (
+                    <span
+                        key={`${ch}-${i}`}
+                        className={`tt-char inline-block ${extraClass}`}
+                    >
+                        {ch}
+                    </span>
+                ))}
+            </span>
+        );
+    };
     return (
-        <div className="z-10 text-center px-8 drop-shadow-lg shadow-black">
+        <div ref={containerRef} className="z-10 text-center px-8 drop-shadow-lg shadow-black">
             <div className="uppercase text-sm mb-4 font-title">
-                {greeting.main}
+                {renderChars(greeting.main)}
             </div>
             <div className="text-4xl font-title font-medium">
-                {greeting.secondary}
-                <span className="text-orange-500">
-                    {" "}
-                    {greeting.secondary_two}
-                </span>
+                {renderChars(greeting.secondary)}
+                {" "}
+                {renderChars(greeting.secondary_two, "text-orange-500")}
             </div>
         </div>
     );

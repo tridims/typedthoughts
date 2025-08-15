@@ -6,6 +6,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import { getCollection } from "astro:content";
 import Masthead from "@/components/Masthead.astro";
 import Content from "@/components/Content.astro";
+import RevealOnScroll from "@/components/react/RevealOnScroll";
 import FormattedDate from "@/components/FormattedDate.astro";
 import { Image } from "astro:assets";
 
@@ -25,18 +26,21 @@ const posts = (await getCollection("blog")).sort(
             <Masthead />
             <Content>
                 <section>
-                    <p class="mb-8 indent-4">
-                        Welcome to my tech corner! Here I document solutions,
-                        share tutorials, and reflect on my experiences in
-                        software development and site reliability engineering.
-                        Hope you find something useful.
-                        <a
-                            class="inline-flex items-center gap-1 indent-1 text-orange-500"
-                            href="/about"
-                        >
-                            Learn more about me
-                        </a>
-                    </p>
+                    <RevealOnScroll client:visible>
+                        <p class="mb-8 indent-4">
+                            Welcome to my tech corner! Here I document
+                            solutions, share tutorials, and reflect on my
+                            experiences in software development and site
+                            reliability engineering. Hope you find something
+                            useful.
+                            <a
+                                class="inline-flex items-center gap-1 indent-1 text-orange-500"
+                                href="/about"
+                            >
+                                Learn more about me
+                            </a>
+                        </p>
+                    </RevealOnScroll>
                 </section>
                 <section>
                     <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
