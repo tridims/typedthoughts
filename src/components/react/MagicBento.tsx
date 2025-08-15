@@ -63,6 +63,7 @@ function GlobalSpotlight({ gridRef, enabled = true, radius = DEFAULT_SPOTLIGHT_R
   disabled?: boolean;
 }) {
   const spotRef = useRef<HTMLDivElement | null>(null);
+  const activeRef = useRef(false);
 
   useEffect(() => {
     if (disabled || !enabled || !gridRef.current) return;
@@ -78,8 +79,27 @@ function GlobalSpotlight({ gridRef, enabled = true, radius = DEFAULT_SPOTLIGHT_R
 
     const onMove = (e: MouseEvent) => {
       const grid = gridRef.current!;
+      if (!activeRef.current) {
+        // If we're not inside the grid, keep spotlight hidden and glows off
+        gsap.to(spot, { opacity: 0, duration: 0.2, ease: "power2.out" });
+        return;
+      }
       const cards = grid.querySelectorAll<HTMLElement>(".card");
       const { proximity, fade } = calculateSpotlightValues(radius);
+
+      // Guard: if pointer is well outside the grid bounds, hide spotlight and skip work
+      const gr = grid.getBoundingClientRect();
+      const margin = radius; // allow some leeway for in-between glow near edges
+      if (
+        e.clientX < gr.left - margin ||
+        e.clientX > gr.right + margin ||
+        e.clientY < gr.top - margin ||
+        e.clientY > gr.bottom + margin
+      ) {
+        cards.forEach((c) => c.style.setProperty("--glow-intensity", "0"));
+        gsap.to(spot, { opacity: 0, duration: 0.2, ease: "power2.out" });
+        return;
+      }
 
       let minDist = Infinity;
       cards.forEach((card) => {
@@ -100,18 +120,34 @@ function GlobalSpotlight({ gridRef, enabled = true, radius = DEFAULT_SPOTLIGHT_R
       gsap.to(spot, { opacity: targetOpacity, duration: targetOpacity > 0 ? 0.2 : 0.4, ease: "power2.out" });
     };
 
-    const onLeave = () => {
+    const onLeaveDoc = () => {
       const grid = gridRef.current!;
       const cards = grid.querySelectorAll<HTMLElement>(".card");
       cards.forEach((c) => c.style.setProperty("--glow-intensity", "0"));
       gsap.to(spot, { opacity: 0, duration: 0.3, ease: "power2.out" });
     };
 
+    const onGridEnter = () => {
+      activeRef.current = true;
+    };
+    const onGridLeave = () => {
+      activeRef.current = false;
+      const grid = gridRef.current!;
+      const cards = grid.querySelectorAll<HTMLElement>(".card");
+      cards.forEach((c) => c.style.setProperty("--glow-intensity", "0"));
+      gsap.to(spot, { opacity: 0, duration: 0.2, ease: "power2.out" });
+    };
+
     document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseleave", onLeave);
+    document.addEventListener("mouseleave", onLeaveDoc);
+    const gridEl = gridRef.current;
+    gridEl?.addEventListener("mouseenter", onGridEnter);
+    gridEl?.addEventListener("mouseleave", onGridLeave);
     return () => {
       document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseleave", onLeave);
+      document.removeEventListener("mouseleave", onLeaveDoc);
+      gridEl?.removeEventListener("mouseenter", onGridEnter);
+      gridEl?.removeEventListener("mouseleave", onGridLeave);
       spot.remove();
     };
   }, [disabled, enabled, glowColor, gridRef, radius]);
