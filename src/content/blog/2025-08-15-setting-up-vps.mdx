@@ -1,0 +1,136 @@
+---
+title: Guide on Setting Up a VPS
+description: A note for me and everyone else on how to set up a VPS securely.
+pubDate: 2025-08-15
+updated: NULL
+categories: [Security, Server Admin]
+tags: [vps, linux, ssh, ufw, firewall]
+heroImage:
+    image: "../../assets/scott-rodgerson-PSpf_XgOM5w-unsplash.jpg"
+    source: "https://unsplash.com/@scottrodgerson"
+    owner: "Scott Rodgerson"
+---
+
+VPS is a standard options for many IT people when it comes to deploying applications, hosting websites, and as a development server. Buying vps is also preferable for many people than using serverless platform because of more consistent billing, chance to tinker and customize the server environment, as well as better control over resources.
+
+However, there is always a perceived difficulty and hesitation due to the technical requirements when it comes to setting up a VPS. This is a note for me and everyone else on how to set up a VPS securely.
+
+## Requirements
+
+<ol style="list-style: decimal; padding-inline-start: 1.25rem;">
+    <li>
+        <b>VPS Server</b> - better if you find some provider with promo. Like
+        tencentcloud rencently with it's lighthouse offering.
+    </li>
+    <li>
+        <b>DNS Record</b> - Good to have because you can deploy your
+        applications securely and getting SSL certs for it.
+    </li>
+</ol>
+
+## Approach
+
+In this note, I am writing the steps with simple tooling. Nothing like kubernetes (k3s, microk8s, etc), no full-featured self deploy platform (dokku, coolify), no IaaS (terraform), and no additional layers of abstraction. Just simple linux and docker, as well as configuring firewall and using overlay vpn to further limit the access to the VPS.
+
+## VPS setup
+
+I choose Ubuntu 24.04 as the operating system for the VPS because stability, security, and familiarity. I think it provides a solid foundation for running various applications and services.
+
+After the VPS is up and running, I will do the following steps:
+
+#### Adding non-root user
+
+```bash
+adduser dimas
+usermod -aB sudo dimas
+```
+
+> Note: there is both adduser and useradd commands in linux. Differences is the adduser command is more user-friendly and interactive, while useradd is more low-level and requires more parameters to be set. Command adduser also create the home dir automatically.
+
+#### SSH Setup and Simple Hardening
+
+There is some simple but crucial steps to make SSH less prone to attacks.
+
+##### 1. Use public key to authenticate to the vps
+
+Copy your ssh pub key from local machine to the remote server
+
+```bash
+ssh-copy-id dimas@<ip_address>
+```
+
+##### 2. Modify SSH config
+
+Open the sshd config in the editor
+
+```bash
+sudo nano /etc/ssh/sshd_config
+```
+
+Then change the following lines:
+
+```plaintext
+PasswordAuthentication no
+PermitRootLogin no
+UsePAM no
+```
+
+Then, reload the SSH service
+
+```bash
+sudo systemctl reload sshd
+```
+
+#### Firewall Setup
+
+I will use UFW (Uncomplicated Firewall) to set up the firewall on the VPS. UFW is a user-friendly interface for managing iptables firewall rules.
+
+```bash
+# Default policies
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# Allow SSH (critical - don&#39;t skip this!)
+sudo ufw allow ssh
+
+# Allow HTTP and HTTPS
+sudo ufw allow 80
+sudo ufw allow 443
+
+# Enable firewall
+sudo ufw enable
+```
+
+This will set up the firewall to allow only SSH, HTTP, and HTTPS traffic, while blocking all other incoming connections.
+
+> Caveats: Docker can bypass UFW rules by directly modifying iptables. This is a known issue, and the best solution is to use a reverse proxy instead of exposing application ports directly.
+
+## Docker Setup
+
+You can follow the official docker installation guide in [Docker Docs](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository).
+
+```bash
+# Add Docker&#39;s official GPG key
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Add user to docker group
+sudo usermod -aG docker $USER
+```
+
+## Closing
+
+After this, I recommend configuring the traefik reverse proxy to manage the applications deployments, configuring SSL cert using Let's Encrypt as well as providing a unified entry point for your services. Traefik can automatically discover your services and configure itself accordingly, making it a great choice for a dynamic environment. This will be another blogpost that I will write later. Another good options are using Netbird/Tailscale to create a secure overlay network for your VPS and applications, which can simplify access control and enhance security.
