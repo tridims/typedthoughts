@@ -1,0 +1,15 @@
+---
+// src/components/ArticleList.astro
+import { type CollectionEntry } from "astro:content";
+import ArticleListItem from "./ArticleListItem.astro";
+
+interface Props {
+    posts: CollectionEntry<"blog">[];
+}
+
+const { posts } = Astro.props;
+---
+
+<section>
+    {posts.map((post) => <ArticleListItem post={post} />)}
+</section>

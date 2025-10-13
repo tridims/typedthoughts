@@ -6,10 +6,8 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import { getCollection } from "astro:content";
 import Content from "@/components/Content.astro";
 import RevealOnScroll from "@/components/react/RevealOnScroll";
-import MagicBento from "@/components/react/MagicBento";
-import FormattedDate from "@/components/FormattedDate.astro";
-import { Image } from "astro:assets";
-import Greeting from "@/components/react/Greeting";
+import ArticleList from "@/components/ArticleList.astro";
+import AboutMe from "@/components/AboutMe.astro";
 
 const posts = (await getCollection("blog")).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -21,62 +19,18 @@ const posts = (await getCollection("blog")).sort(
     <head>
         <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
     </head>
-    <body>
+    <body class="min-h-screen flex flex-col">
         <Header title={SITE_TITLE} />
-        <main class="pt-[56px]" transition:animate="fade">
-            <section
-                class="relative flex justify-center items-center h-50 mb-6"
+        <main class="pt-[56px] flex-1" transition:animate="fade">
+            <article
+                class="mx-auto max-w-6xl my-auto mt-6 flex flex-col md:flex-row"
             >
-                <Greeting client:load />
-            </section>
+                <div class="w-full md:w-3/4 lg:w-3/5">
+                    <ArticleList posts={posts} />
+                </div>
 
-            <Content>
-                <section>
-                    <RevealOnScroll client:visible>
-                        <p class="mb-8 indent-4">
-                            Welcome to my tech corner! Here I document
-                            solutions, share tutorials, and reflect on my
-                            experiences in software development and site
-                            reliability engineering. Hope you find something
-                            useful.
-                            <a
-                                class="inline-flex items-center gap-1 indent-1 text-orange-500"
-                                href="/about"
-                            >
-                                Learn more about me
-                            </a>
-                        </p>
-                    </RevealOnScroll>
-                </section>
-                <section>
-                    <MagicBento
-                        client:visible
-                        items={posts.map((post) => ({
-                            title: post.data.title,
-                            description: post.data.description,
-                            href: `/blog/${post.id}/`,
-                            imageSrc:
-                                post.data.heroImage.image.src ?? undefined,
-                            dateText: new Date(
-                                post.data.pubDate
-                            ).toLocaleDateString(undefined, {
-                                year: "numeric",
-                                month: "short",
-                                day: "2-digit",
-                            }),
-                        }))}
-                        columns={1}
-                        textAutoHide={false}
-                        enableStars={true}
-                        enableBorderGlow={true}
-                        enableTilt={true}
-                        enableMagnetism={true}
-                        clickEffect={true}
-                        particleCount={12}
-                        glowColor="var(--color-primary)"
-                    />
-                </section>
-            </Content>
+                <AboutMe />
+            </article>
         </main>
         <Footer />
     </body>
