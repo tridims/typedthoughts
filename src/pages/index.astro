@@ -4,12 +4,12 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import { getCollection } from "astro:content";
-import Masthead from "@/components/Masthead.astro";
 import Content from "@/components/Content.astro";
 import RevealOnScroll from "@/components/react/RevealOnScroll";
 import MagicBento from "@/components/react/MagicBento";
 import FormattedDate from "@/components/FormattedDate.astro";
 import { Image } from "astro:assets";
+import Greeting from "@/components/react/Greeting";
 
 const posts = (await getCollection("blog")).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -24,7 +24,12 @@ const posts = (await getCollection("blog")).sort(
     <body>
         <Header title={SITE_TITLE} />
         <main class="pt-[56px]" transition:animate="fade">
-            <Masthead />
+            <section
+                class="relative flex justify-center items-center h-50 mb-6"
+            >
+                <Greeting client:load />
+            </section>
+
             <Content>
                 <section>
                     <RevealOnScroll client:visible>
