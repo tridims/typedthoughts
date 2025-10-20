@@ -23,7 +23,7 @@ const posts = (await getCollection("blog")).sort(
         <Header title={SITE_TITLE} />
         <main class="pt-[56px] flex-1" transition:animate="fade">
             <article
-                class="mx-auto max-w-6xl my-auto mt-6 flex flex-col md:flex-row"
+                class="mx-auto max-w-3xl my-auto mt-6 flex flex-col md:flex-row"
             >
                 <div class="w-full md:w-3/4 lg:w-3/5">
                     <ArticleList posts={posts} />

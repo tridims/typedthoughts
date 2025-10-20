@@ -1,6 +1,7 @@
 ---
 // src/components/ArticleListItem.astro
 import { type CollectionEntry } from "astro:content";
+import { marked } from "marked";
 
 interface Props {
     post: CollectionEntry<"blog">;
@@ -11,30 +12,30 @@ const { title, pubDate, description } = post.data;
 
 // A helper to format the date like in the example: YYYY-MM-DD
 const formattedDate = new Date(pubDate).toISOString().split("T")[0];
+
+const htmlDescription = await marked.parse(description);
 ---
 
 <article>
-    <a
-        href={`/blog/${post.id}/`}
-        class="block group py-8 border-b border-neutral-800 last:border-b-0"
-    >
+    <a href={`/blog/${post.id}/`} class="block group py-8">
         <time
             datetime={pubDate.toISOString()}
-            class="font-mono text-sm text-neutral-500"
+            class="font-mono text-sm text-muted"
         >
             {formattedDate}
         </time>
         <h2
-            class="text-2xl font-bold text-neutral-100 mt-2 group-hover:text-orange-400 transition-colors duration-300 flex items-center gap-2"
+            class="text-xl font-bold text-foreground mt-2 group-hover:text-popover transition-colors duration-300 flex items-center gap-2"
         >
             {title.toUpperCase()}
             <span
-                class="text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-2 group-hover:translate-x-0"
+                class="text-popover opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-2 group-hover:translate-x-0"
                 >↗</span
             >
         </h2>
-        <p class="text-neutral-400 mt-3 leading-relaxed">
+        <!-- <p class="text-foreground mt-3">
             {description}
-        </p>
+        </p> -->
+        <div class="text-foreground mt-3 prose" set:html={htmlDescription} />
     </a>
 </article>

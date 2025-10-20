@@ -4,10 +4,38 @@ pubDate: 2022-07-05T08:36:28.798+0700
 updatedDate: 2022-07-05T08:36:28.798+0700
 categories: [""]
 tags: ["xss-attack", "cross-site-scripting"]
-description: "Cross-Site-Scripting atau yang disingkat XSS adalah serangan berupa code injection yang menanamkan kode/skrip berbahaya di website yang…"
 heroImage:
     image: ../../assets/d23309750e10/06QYOVknjvvwFBtZd.png
 externalPost: https://tridims.medium.com/mengenal-serangan-cross-site-scripting-xss-pada-website-d23309750e10
+description: |
+    **TL;DR:** *XSS adalah serangan injeksi skrip pada sisi klien yang memungkinkan penyerang menjalankan kode berbahaya di browser korban untuk mencuri data, mengambil alih sesi, atau menyebarkan malware.*
+
+    **Apa itu XSS?**  
+    XSS (Cross‑Site Scripting) adalah serangan yang memasukkan skrip berbahaya ke halaman web atau aplikasi web yang dipercaya. Skrip ini dieksekusi di browser korban ketika input pengguna ditampilkan tanpa validasi atau sanitasi yang tepat.
+
+    **Jenis‑jenis XSS**
+    - **Reflected XSS (Non‑Persistent)** — skrip dikirim sebagai bagian dari request dan segera dipantulkan ke korban; sering dipakai lewat link jahat.
+    - **Stored XSS (Persistent)** — skrip disimpan di server (mis. database, log, forum) dan dieksekusi setiap kali konten tersebut diload; *paling berbahaya*.
+    - **DOM‑based XSS** — skrip dimasukkan dan dirender lewat manipulasi DOM (mis. fragment URL), tanpa perubahan pada server.
+
+    **Contoh payload singkat**
+    - `"<script>alert(1)</script>"`
+    - `<body onload=alert('test')>`
+    - `<img src="x" onerror=alert(document.cookie)>`
+
+    **Alat yang sering dipakai**
+    - XSSer, XSStrike, Shuriken, Xsscrapy, KNOXSS, BeEF
+
+    **Dampak**
+    XSS dapat menyebabkan pencurian cookie/kredensial, sesi dibajak, distribusi phishing/malware, dan manipulasi konten. Stored XSS biasanya berdampak paling parah.
+
+    **Pencegahan ringkas**
+    - *Validasi* dan *sanitasi* semua input pengguna  
+    - *Escape/encode* output sesuai konteks (HTML, attribute, JS, URL)  
+    - Terapkan header keamanan (Content Security Policy, X‑Content‑Type‑Options, dll.)  
+    - Praktik secure‑coding dan pemeriksaan keamanan (pengetesan & scanning)
+
+    ---
 ---
 
 Cross\-Site\-Scripting atau yang disingkat XSS adalah serangan berupa code injection yang menanamkan kode/skrip berbahaya di website yang terpercaya\. Serangan ini mengeksploitasi kerentanan XSS untuk mencuri data, mengendalikan sesi pengguna, menjalankan kode jahat, atau digunakan sebagai bagian dari serangan phishing\.
