@@ -1,32 +1,30 @@
 ---
-import Icon from "./react/SocialIcons";
+import { FaLinkedin, FaMedium, FaGithub } from "react-icons/fa";
 
 const socialLinks = [
     {
         name: "GitHub",
         href: "https://github.com/tridims",
-        icon: "github",
+        icon: FaGithub,
         handle: "@tridims",
     },
     {
         name: "LinkedIn",
         href: "https://linkedin.com/in/dimastrim",
-        icon: "linkedin",
+        icon: FaLinkedin,
         handle: "@dimastrim",
     },
     {
-        name: "X",
-        href: "https://x.com/tridimss",
-        icon: "x",
-        handle: "@tridimss",
+        name: "Medium",
+        href: "https://medium.com/@tridims",
+        icon: FaMedium,
+        handle: "@tridims",
     },
 ];
 
-// We need to find the specific links for the custom layout
 const linkedIn = socialLinks.find((link) => link.name === "LinkedIn");
-// Filter out LinkedIn to get the rest for the second row
+
 const otherLinks = socialLinks.filter((link) => link.name !== "LinkedIn");
-// We also need a general handle for the second row, like in the image
 const generalHandle = "@tridims"; // Change this to your preferred general handle
 ---
 
@@ -56,47 +54,41 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
         <div class="border border-neutral-700 rounded-2xl p-8 shadow-lg">
             <!-- Top Row: LinkedIn -->
             {
-                linkedIn && (
-                    <a
-                        href={linkedIn.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="flex items-center gap-4 mb-8 text-foreground hover:text-popover transition-colors"
-                    >
-                        <Icon
-                            name="linkedin"
-                            className="text-4xl"
-                            client:visible
-                        />
-                        <span class="font-sans text-xl font-medium tracking-tight">
-                            {linkedIn.handle}
-                        </span>
-                    </a>
-                )
+                linkedIn &&
+                    (() => {
+                        const Icon = linkedIn.icon;
+
+                        return (
+                            <a
+                                href={linkedIn.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="flex items-center gap-4 mb-8 text-foreground hover:text-popover transition-colors"
+                            >
+                                <Icon className="text-4xl" />
+                                <span class="font-sans text-xl font-medium tracking-tight">
+                                    {linkedIn.handle}
+                                </span>
+                            </a>
+                        );
+                    })
             }
 
             <!-- Middle Row: Other Social Icons -->
             <div class="flex items-center gap-5">
                 {
-                    otherLinks.map((link) => (
+                    otherLinks.map(({ href, icon: Icon }) => (
                         <a
-                            href={link.href}
+                            href={href}
                             target="_blank"
                             rel="noopener noreferrer"
                             class="text-foreground hover:text-popover transition-colors"
                         >
-                            {
-                                <Icon
-                                    name={link.icon as any}
-                                    className="text-3xl"
-                                    client:visible
-                                />
-                            }
+                            <Icon className="text-3xl" />
                         </a>
                     ))
                 }
 
-                <!-- Handle Text for the second row -->
                 <span class="text-foreground text-lg ml-2 font-medium">
                     {generalHandle}
                 </span>
