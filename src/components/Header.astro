@@ -1,7 +1,4 @@
 ---
-import HeaderLink from "./HeaderLink.astro";
-import { SITE_TITLE } from "../consts";
-import { IoLogoGithub } from "react-icons/io5";
 import ThemeToggle from "./react/ThemeToggleButton";
 import Logo from "./Logo.astro";
 ---
@@ -10,12 +7,6 @@ import Logo from "./Logo.astro";
     <div class="mx-auto max-w-3xl">
         <nav class="flex items-center gap-3 text-base">
             <Logo />
-            <div class="items-center gap-6 hidden md:flex">
-                <HeaderLink href="/about">About</HeaderLink>
-                <HeaderLink href="https://github.com/tridims" target="_blank"
-                    ><IoLogoGithub />Source</HeaderLink
-                >
-            </div>
             <div class="flex-1"></div>
             <ThemeToggle client:visible />
         </nav>

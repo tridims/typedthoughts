@@ -136,7 +136,7 @@ export default function Greeting() {
             <div className="uppercase text-sm mb-4 font-title">
                 {renderChars(greeting.main)}
             </div>
-            <div className="text-4xl font-title font-medium">
+            <div className="text-3xl font-title font-medium">
                 {renderChars(greeting.secondary)}
                 {" "}
                 {renderChars(greeting.secondary_two, "text-orange-500")}
