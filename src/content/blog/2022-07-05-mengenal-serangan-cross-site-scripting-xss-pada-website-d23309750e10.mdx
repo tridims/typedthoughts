@@ -7,16 +7,17 @@ tags: ["xss-attack", "cross-site-scripting"]
 heroImage:
     image: ../../assets/d23309750e10/06QYOVknjvvwFBtZd.png
 externalPost: https://tridims.medium.com/mengenal-serangan-cross-site-scripting-xss-pada-website-d23309750e10
-description: |
-    **TL;DR:** *XSS adalah serangan injeksi skrip pada sisi klien yang memungkinkan penyerang menjalankan kode berbahaya di browser korban untuk mencuri data, mengambil alih sesi, atau menyebarkan malware.*
+description: "XSS adalah serangan injeksi skrip pada sisi klien yang memungkinkan penyerang menjalankan kode berbahaya di browser korban untuk mencuri data, mengambil alih sesi, atau menyebarkan malware."
+shorts: |
+    > **TL;DR:** *XSS adalah serangan injeksi skrip pada sisi klien yang memungkinkan penyerang menjalankan kode berbahaya di browser korban untuk mencuri data, mengambil alih sesi, atau menyebarkan malware.*
 
     **Apa itu XSS?**  
-    XSS (Cross‑Site Scripting) adalah serangan yang memasukkan skrip berbahaya ke halaman web atau aplikasi web yang dipercaya. Skrip ini dieksekusi di browser korban ketika input pengguna ditampilkan tanpa validasi atau sanitasi yang tepat.
+    XSS (Cross-Site Scripting) adalah serangan yang memasukkan skrip berbahaya ke halaman web atau aplikasi web yang dipercaya. Skrip ini dieksekusi di browser korban ketika input pengguna ditampilkan tanpa validasi atau sanitasi yang tepat.
 
-    **Jenis‑jenis XSS**
-    - **Reflected XSS (Non‑Persistent)** — skrip dikirim sebagai bagian dari request dan segera dipantulkan ke korban; sering dipakai lewat link jahat.
+    **Jenis-jenis XSS**
+    - **Reflected XSS (Non-Persistent)** — skrip dikirim sebagai bagian dari request dan segera dipantulkan ke korban; sering dipakai lewat link jahat.
     - **Stored XSS (Persistent)** — skrip disimpan di server (mis. database, log, forum) dan dieksekusi setiap kali konten tersebut diload; *paling berbahaya*.
-    - **DOM‑based XSS** — skrip dimasukkan dan dirender lewat manipulasi DOM (mis. fragment URL), tanpa perubahan pada server.
+    - **DOM-based XSS** — skrip dimasukkan dan dirender lewat manipulasi DOM (mis. fragment URL), tanpa perubahan pada server.
 
     **Contoh payload singkat**
     - `"<script>alert(1)</script>"`
@@ -32,8 +33,8 @@ description: |
     **Pencegahan ringkas**
     - *Validasi* dan *sanitasi* semua input pengguna  
     - *Escape/encode* output sesuai konteks (HTML, attribute, JS, URL)  
-    - Terapkan header keamanan (Content Security Policy, X‑Content‑Type‑Options, dll.)  
-    - Praktik secure‑coding dan pemeriksaan keamanan (pengetesan & scanning)
+    - Terapkan header keamanan (Content Security Policy, X-Content-Type-Options, dll.)  
+    - Praktik secure-coding dan pemeriksaan keamanan (pengetesan & scanning)
 
     ---
 ---

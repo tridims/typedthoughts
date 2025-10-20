@@ -8,12 +8,12 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, pubDate, description } = post.data;
+const { title, pubDate, shorts } = post.data;
 
 // A helper to format the date like in the example: YYYY-MM-DD
 const formattedDate = new Date(pubDate).toISOString().split("T")[0];
 
-const htmlDescription = await marked.parse(description);
+const htmlShorts = await marked.parse(shorts);
 ---
 
 <article>
@@ -36,6 +36,9 @@ const htmlDescription = await marked.parse(description);
         <!-- <p class="text-foreground mt-3">
             {description}
         </p> -->
-        <div class="text-foreground mt-3 prose" set:html={htmlDescription} />
+        <div
+            class="text-foreground mt-3 prose prose-blockquote:text-foreground"
+            set:html={htmlShorts}
+        />
     </a>
 </article>
