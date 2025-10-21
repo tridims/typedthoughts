@@ -36,9 +36,12 @@ const hasMorePosts = allPosts.length > 3;
                             <div class="mt-8 text-center">
                                 <a
                                     href="/blogs/2"
-                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4"
+                                    class="inline-block group py-2 px-4 text-sm font-medium text-foreground hover:text-popover transition-colors duration-300"
                                 >
                                     See other posts
+                                    <span class="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-1 group-hover:translate-x-0">
+                                        →
+                                    </span>
                                 </a>
                             </div>
                         )
