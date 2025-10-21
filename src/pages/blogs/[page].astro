@@ -1,0 +1,174 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { SITE_TITLE } from "../../consts";
+import { getCollection } from "astro:content";
+import Content from "@/components/Content.astro";
+import ArticleList from "@/components/ArticleList.astro";
+import AboutMe from "@/components/AboutMe.astro";
+
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+    const allPosts = await getCollection("blog");
+    // Sort posts by publication date (newest first)
+    const sortedPosts = allPosts.sort(
+        (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+    );
+    // Return paginated results with 3 posts per page
+    return paginate(sortedPosts, { pageSize: 3 });
+}
+
+const { page } = Astro.props;
+const {
+    data: posts,
+    url,
+    currentPage,
+    lastPage,
+} = page as {
+    data: any[];
+    url: {
+        current: string;
+        prev: string | undefined;
+        next: string | undefined;
+        first: string | undefined;
+        last: string | undefined;
+    };
+    currentPage: number;
+    lastPage: number;
+};
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <BaseHead
+            title={`${SITE_TITLE} - Blog Page ${currentPage}`}
+            description="Blog posts listing"
+        />
+    </head>
+    <body class="min-h-screen flex flex-col">
+        <Header title={SITE_TITLE} />
+        <main class="pt-[56px] flex-1" transition:animate="fade">
+            <article
+                class="mx-auto max-w-3xl my-auto mt-6 flex flex-col md:flex-row"
+            >
+                <div class="w-full md:w-3/4 lg:w-3/5">
+                    <h1 class="text-3xl font-bold mb-6">
+                        Blog Posts - Page {currentPage}
+                    </h1>
+                    <ArticleList posts={posts} />
+
+                    <!-- Pagination Controls -->
+                    <nav
+                        class="mt-8 flex justify-center items-center space-x-4"
+                    >
+                        {
+                            url.prev ? (
+                                <a
+                                    href={url.prev}
+                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4"
+                                >
+                                    ← Previous
+                                </a>
+                            ) : (
+                                <span class="inline-flex items-center justify-center rounded-md text-sm font-medium h-10 py-2 px-4 text-muted-foreground cursor-not-allowed">
+                                    ← Previous
+                                </span>
+                            )
+                        }
+
+                        <span class="text-sm text-muted-foreground">
+                            Page {currentPage} of {lastPage}
+                        </span>
+
+                        {
+                            url.next ? (
+                                <a
+                                    href={url.next}
+                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4"
+                                >
+                                    Next →
+                                </a>
+                            ) : (
+                                <span class="inline-flex items-center justify-center rounded-md text-sm font-medium h-10 py-2 px-4 text-muted-foreground cursor-not-allowed">
+                                    Next →
+                                </span>
+                            )
+                        }
+                    </nav>
+
+                    <!-- Additional pagination links for easier navigation -->
+                    <div class="mt-4 flex justify-center">
+                        <div class="flex space-x-2">
+                            {
+                                url.first && currentPage > 2 ? (
+                                    <>
+                                        <a
+                                            href={url.first}
+                                            class="px-3 py-1 text-sm rounded hover:bg-muted"
+                                        >
+                                            1
+                                        </a>
+                                        {currentPage > 3 ? (
+                                            <span class="px-2 py-1 text-sm">
+                                                ...
+                                            </span>
+                                        ) : null}
+                                    </>
+                                ) : null
+                            }
+
+                            {
+                                url.prev && currentPage > 2 ? (
+                                    <a
+                                        href={url.prev}
+                                        class="px-3 py-1 text-sm rounded hover:bg-muted"
+                                    >
+                                        {currentPage - 1}
+                                    </a>
+                                ) : null
+                            }
+
+                            <span
+                                class="px-3 py-1 text-sm rounded bg-primary text-primary-foreground"
+                                >{currentPage}</span
+                            >
+
+                            {
+                                url.next && currentPage < lastPage ? (
+                                    <a
+                                        href={url.next}
+                                        class="px-3 py-1 text-sm rounded hover:bg-muted"
+                                    >
+                                        {currentPage + 1}
+                                    </a>
+                                ) : null
+                            }
+
+                            {
+                                url.last && currentPage < lastPage - 1 ? (
+                                    <>
+                                        {currentPage < lastPage - 2 ? (
+                                            <span class="px-2 py-1 text-sm">
+                                                ...
+                                            </span>
+                                        ) : null}
+                                        <a
+                                            href={url.last}
+                                            class="px-3 py-1 text-sm rounded hover:bg-muted"
+                                        >
+                                            {lastPage}
+                                        </a>
+                                    </>
+                                ) : null
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <AboutMe />
+            </article>
+        </main>
+        <Footer />
+    </body>
+</html>
