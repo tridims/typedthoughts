@@ -3,12 +3,14 @@ import LogoIcon from "./CustomLogo.astro";
 ---
 
 <a href="/" class="inline-block">
-    <span class="font-bold text-lg inline-flex items-center leading-5 group">
+    <div class="font-bold inline-flex items-center leading-5 group">
         <LogoIcon
             className="transition-transform duration-200 ease-in-out group-hover:rotate-[20deg]"
+            width={35}
+            height={35}
         />
-        <span class="font-title font-bold p-2 text-3xl ml-2">
+        <span class="font-title font-bold p-2 text-2xl ml-2">
             Dimas Tri Mustakim
         </span>
-    </span>
+    </div>
 </a>

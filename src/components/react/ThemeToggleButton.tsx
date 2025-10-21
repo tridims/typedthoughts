@@ -40,7 +40,7 @@ export default function ThemeToggle() {
     }, []);
 
     return isMounted ? (
-        <div className="inline-flex items-center p-px rounded-3xl bg-secondary">
+        <div className="inline-flex items-center p-px rounded-2xl bg-secondary">
             {themes.map((t) => {
                 const checked = t === theme;
                 return (
@@ -48,7 +48,7 @@ export default function ThemeToggle() {
                         key={t}
                         className={`${
                             checked ? "bg-popover text-card-foreground" : ""
-                        } cursor-pointer rounded-3xl p-2`}
+                        } cursor-pointer rounded-2xl p-2`}
                         onClick={toggleTheme}
                         aria-label="Toggle theme"
                     >
