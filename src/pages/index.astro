@@ -9,9 +9,13 @@ import RevealOnScroll from "@/components/react/RevealOnScroll";
 import ArticleList from "@/components/ArticleList.astro";
 import AboutMe from "@/components/AboutMe.astro";
 
-const posts = (await getCollection("blog")).sort(
+const allPosts = (await getCollection("blog")).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+// Display only the latest 3 posts on the index page
+const posts = allPosts.slice(0, 3);
+// Check if there are more posts to show
+const hasMorePosts = allPosts.length > 3;
 ---
 
 <!doctype html>
@@ -27,6 +31,21 @@ const posts = (await getCollection("blog")).sort(
             >
                 <div class="w-full md:w-3/4 lg:w-3/5">
                     <ArticleList posts={posts} />
+                    {
+                        hasMorePosts && (
+                            <div class="mt-8 text-center">
+                                <a
+                                    href="/blogs/2"
+                                    class="inline-block group py-2 px-4 text-sm font-medium text-foreground hover:text-popover transition-colors duration-300"
+                                >
+                                    See other posts
+                                    <span class="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-1 group-hover:translate-x-0">
+                                        →
+                                    </span>
+                                </a>
+                            </div>
+                        )
+                    }
                 </div>
 
                 <AboutMe />

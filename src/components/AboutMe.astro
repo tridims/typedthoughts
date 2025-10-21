@@ -29,70 +29,68 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
 ---
 
 <aside class="w-full md:w-1/4 lg:w-2/5 md:pl-8 lg:pl-12 mt-12 md:mt-0">
-    <div class="sticky top-20">
-        <div class="flex items-center gap-4 mb-4">
-            <img
-                src="/images/cat.jpeg"
-                alt="Dimas Tri Mustakim"
-                class="w-26 h-26 rounded-3xl object-cover"
-            />
-            <div>
-                <p class="text-lg text-primary-background">
-                    Software Engineer, Toolmaker, Homelab Enthusiast
-                </p>
-            </div>
+    <div class="flex items-center gap-4 mb-4 top-20">
+        <img
+            src="/images/cat.jpeg"
+            alt="Dimas Tri Mustakim"
+            class="w-26 h-26 rounded-3xl object-cover"
+        />
+        <div>
+            <p class="text-lg text-primary-background">
+                Software Engineer, Toolmaker, Homelab Enthusiast
+            </p>
         </div>
+    </div>
 
-        <a
-            href="/about"
-            class="inline-block w-full text-center border border-neutral-700 rounded-lg px-4 py-2 text-sm text-foreground hover:bg-popover transition-colors mb-8"
-        >
-            About Me &rarr;
-        </a>
+    <a
+        href="/about"
+        class="inline-block w-full text-center border border-neutral-700 rounded-lg px-4 py-2 text-sm text-foreground hover:bg-popover transition-colors mb-8"
+    >
+        About Me &rarr;
+    </a>
 
-        <h3 class="font-semibold text-foreground mb-4">Follow</h3>
-        <div class="border border-neutral-700 rounded-2xl p-8 shadow-lg">
-            <!-- Top Row: LinkedIn -->
-            {
-                linkedIn &&
-                    (() => {
-                        const Icon = linkedIn.icon;
+    <h3 class="font-semibold text-foreground mb-4">Follow</h3>
+    <div class="border border-neutral-700 rounded-2xl p-8 shadow-lg">
+        <!-- Top Row: LinkedIn -->
+        {
+            linkedIn &&
+                (() => {
+                    const Icon = linkedIn.icon;
 
-                        return (
-                            <a
-                                href={linkedIn.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="flex items-center gap-4 mb-8 text-foreground hover:text-popover transition-colors"
-                            >
-                                <Icon className="text-4xl" />
-                                <span class="font-sans text-xl font-medium tracking-tight">
-                                    {linkedIn.handle}
-                                </span>
-                            </a>
-                        );
-                    })
-            }
-
-            <!-- Middle Row: Other Social Icons -->
-            <div class="flex items-center gap-5">
-                {
-                    otherLinks.map(({ href, icon: Icon }) => (
+                    return (
                         <a
-                            href={href}
+                            href={linkedIn.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="text-foreground hover:text-popover transition-colors"
+                            class="flex items-center gap-4 mb-8 text-foreground hover:text-popover transition-colors"
                         >
-                            <Icon className="text-3xl" />
+                            <Icon className="text-4xl" />
+                            <span class="font-sans text-xl font-medium tracking-tight">
+                                {linkedIn.handle}
+                            </span>
                         </a>
-                    ))
-                }
+                    );
+                })
+        }
 
-                <span class="text-foreground text-lg ml-2 font-medium">
-                    {generalHandle}
-                </span>
-            </div>
+        <!-- Middle Row: Other Social Icons -->
+        <div class="flex items-center gap-5">
+            {
+                otherLinks.map(({ href, icon: Icon }) => (
+                    <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-foreground hover:text-popover transition-colors"
+                    >
+                        <Icon className="text-3xl" />
+                    </a>
+                ))
+            }
+
+            <span class="text-foreground text-lg ml-2 font-medium">
+                {generalHandle}
+            </span>
         </div>
     </div>
 </aside>

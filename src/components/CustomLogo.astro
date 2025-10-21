@@ -1,14 +1,16 @@
 ---
 export interface Props {
     className?: string;
+    width?: number;
+    height?: number;
 }
 
-const { className = "" } = Astro.props;
+const { className = "", width = 40, height = 40 } = Astro.props;
 ---
 
 <svg
-    width={40}
-    height={40}
+    width={width}
+    height={height}
     class={`inline-block w-5 transition-transform group-hover:rotate-[20deg] ${className}`}
     viewBox="0 0 445.000000 910.000000"
     preserveAspectRatio="xMidYMid meet"

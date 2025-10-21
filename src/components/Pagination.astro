@@ -1,0 +1,125 @@
+---
+// Pagination.astro
+interface Props {
+    currentPage: number;
+    lastPage: number;
+    prevUrl?: string;
+    nextUrl?: string;
+    firstUrl?: string;
+    lastUrl?: string;
+}
+
+const { currentPage, lastPage, prevUrl, nextUrl, firstUrl, lastUrl } =
+    Astro.props;
+---
+
+<!-- Pagination Controls -->
+<nav class="mt-8 flex justify-center items-center space-x-4">
+    {
+        prevUrl ? (
+            <a
+                href={prevUrl}
+                class="inline-block group py-2 px-4 text-sm font-medium text-foreground hover:text-popover transition-colors duration-300"
+            >
+                ← Previous
+            </a>
+        ) : (
+            <span class="inline-block py-2 px-4 text-sm font-medium text-muted-foreground cursor-not-allowed">
+                ← Previous
+            </span>
+        )
+    }
+
+    <span class="text-sm text-muted-foreground">
+        Page {currentPage} of {lastPage}
+    </span>
+
+    {
+        nextUrl ? (
+            <a
+                href={nextUrl}
+                class="inline-block group py-2 px-4 text-sm font-medium text-foreground hover:text-popover transition-colors duration-300"
+            >
+                Next →
+            </a>
+        ) : (
+            <span class="inline-block py-2 px-4 text-sm font-medium text-muted-foreground cursor-not-allowed">
+                Next →
+            </span>
+        )
+    }
+</nav>
+
+<!-- Additional pagination links for easier navigation -->
+<div class="mt-4 flex justify-center">
+    <div class="flex space-x-2">
+        {/* Show first page if we're beyond page 1 */}
+        {
+            currentPage > 1 && firstUrl ? (
+                <>
+                    <a
+                        href={firstUrl}
+                        class="px-3 py-1 text-sm hover:text-popover transition-colors duration-300"
+                    >
+                        1
+                    </a>
+                    {currentPage > 3 ? (
+                        <span class="px-2 py-1 text-sm text-muted-foreground">
+                            ...
+                        </span>
+                    ) : null}
+                </>
+            ) : null
+        }
+
+        {/* Show previous page if it's not page 1 */}
+        {
+            prevUrl && currentPage > 2 ? (
+                <a
+                    href={prevUrl}
+                    class="px-3 py-1 text-sm hover:text-popover transition-colors duration-300"
+                >
+                    {currentPage - 1}
+                </a>
+            ) : null
+        }
+
+        {/* Current page */}
+        <span class="px-3 py-1 text-sm font-medium text-popover">
+            {currentPage}
+        </span>
+
+        {
+            /* Show next page if it's not the last page and not adjacent to last */
+        }
+        {
+            nextUrl && currentPage < lastPage - 1 ? (
+                <a
+                    href={nextUrl}
+                    class="px-3 py-1 text-sm hover:text-popover transition-colors duration-300"
+                >
+                    {currentPage + 1}
+                </a>
+            ) : null
+        }
+
+        {/* Show last page if we're before it */}
+        {
+            currentPage < lastPage && lastUrl ? (
+                <>
+                    {currentPage < lastPage - 2 ? (
+                        <span class="px-2 py-1 text-sm text-muted-foreground">
+                            ...
+                        </span>
+                    ) : null}
+                    <a
+                        href={lastUrl}
+                        class="px-3 py-1 text-sm hover:text-popover transition-colors duration-300"
+                    >
+                        {lastPage}
+                    </a>
+                </>
+            ) : null
+        }
+    </div>
+</div>
