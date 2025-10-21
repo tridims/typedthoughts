@@ -1,17 +1,17 @@
 ---
-import { Image } from 'astro:assets';
-import type { CollectionEntry } from 'astro:content';
-import Content from '@/components/Content.astro';
-import ExternalLink from '@/components/ExternalLink.astro';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import Content from "@/components/Content.astro";
+import ExternalLink from "@/components/ExternalLink.astro";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<"blog">["data"];
 
 const { title, description, pubDate, updatedDate, heroImage, externalPost } =
-  Astro.props;
+    Astro.props;
 ---
 
 <html lang="en">
@@ -95,9 +95,9 @@ const { title, description, pubDate, updatedDate, heroImage, externalPost } =
 
         <main class="pt-[56px]">
             <Content className="pt-6 markdown-body">
-                <div class="mb-8 flex flex-col items-center">
-                    {
-                        heroImage && (
+                {
+                    heroImage && (
+                        <div class="mb-8 flex flex-col items-center">
                             <Image
                                 class="border border-slate-300 dark:border-zinc-700 rounded-xl"
                                 width={1020}
@@ -107,16 +107,15 @@ const { title, description, pubDate, updatedDate, heroImage, externalPost } =
                                 transition:name={title}
                                 transition:animate="slide"
                             />
-                        )
-                    }
-                    {
-                        heroImage && (
-                            <a href={heroImage.source}>
-                                Image by {heroImage.owner}
-                            </a>
-                        )
-                    }
-                </div>
+
+                            {heroImage && heroImage.source && (
+                                <a href={heroImage.source}>
+                                    Image by {heroImage.owner}
+                                </a>
+                            )}
+                        </div>
+                    )
+                }
                 <h1 class="mt-1 font-title">{title}</h1>
                 <div class="date text-muted-foreground">
                     <FormattedDate date={pubDate} />
