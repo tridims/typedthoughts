@@ -1,0 +1,151 @@
+---
+title: "How to Set Up Persistent Logging for Apache Airflow on GKE using the GCS Fuse CSI Driver"
+author: "Dimas Tri Mustakim"
+pubDate: "2025-10-23"
+updateDate: "2025-10-23"
+categories: ["Apache Airflow", "GKE", "GCS Fuse", "Kubernetes", "Logging"]
+tags: ["Apache Airflow", "GKE", "GCS Fuse", "Kubernetes", "Logging"]
+description: "This article explains how to configure persistent logging for Apache Airflow on Google Kubernetes Engine (GKE) when using the Kubernetes Executor. By default, logs are lost when worker pods terminate. The solution is to use the Google Cloud Storage (GCS) FUSE CSI driver to create a ReadWriteMany PersistentVolumeClaim (PVC) backed by a GCS bucket. This involves enabling the GCS Fuse CSI driver in your GKE cluster, configuring a Google Cloud service account with appropriate permissions, and annotating the Airflow Kubernetes service accounts to use Workload Identity. Finally, you create the PersistentVolume and PersistentVolumeClaim and update your Airflow Helm chart values to use this new persistent storage for logs."
+shorts: |
+    This article explains how to configure persistent logging for Apache Airflow on Google Kubernetes Engine (GKE) when using the Kubernetes Executor. By default, logs are lost when worker pods terminate. The solution is to use the Google Cloud Storage (GCS) FUSE CSI driver to create a ReadWriteMany PersistentVolumeClaim (PVC) backed by a GCS bucket. This involves enabling the GCS Fuse CSI driver in your GKE cluster, configuring a Google Cloud service account with appropriate permissions, and annotating the Airflow Kubernetes service accounts to use Workload Identity. Finally, you create the PersistentVolume and PersistentVolumeClaim and update your Airflow Helm chart values to use this new persistent storage for logs.
+---
+
+If you use the official Apache Airflow Helm chart to deploy and manage Airflow in Google Kubernetes Engine (GKE) with the Kubernetes Executor, you'll notice that the execution logs disappear when the worker pods are deleted. One way to solve this is to enable log persistence in the `values.yaml` file:
+
+```yaml
+# Example section for the values.yaml file
+logs:
+    persistence:
+        enabled: true
+        size: 1Gi
+```
+
+However, this configuration requires a PersistentVolumeClaim (PVC) with ReadWriteMany capabilities. In GKE, the standard provided StorageClass doesn't support this, which will cause an error. You need to provide a storage solution that can be mounted by multiple pods simultaneously.
+
+## Using the Google Cloud Storage FUSE CSI Driver for GKE
+
+One of the best options for providing the shared PVC required by multiple Airflow pods is the GCS Fuse CSI driver. This functionality is natively supported by GKE. You can enable this feature in the GKE console by navigating to **Cluster details > Features** and toggling the **Cloud Storage FUSE CSI Driver**.
+
+![](../../assets/gke-enable-gcs-fuse.png)
+
+```yaml
+gcloud container clusters update <CLUSTER_NAME> \
+--update-addons GcsFuseCsiDriver=ENABLED \
+--location=<LOCATION>
+```
+
+Next, you need to configure the Google Cloud service account that the pods will use.
+
+You can do this by **creating a new service account or updating an existing one, adding the `Storage Object Admin role`, and then adding your Kubernetes service accounts as principals with the `Workload Identity User role`**.
+
+The official Helm chart creates multiple Kubernetes service accounts that you need to grant permission to impersonate the Google Cloud service account.
+
+The principal entries should look like this:
+
+```
+project-name.svc.id.goog[airflow/airflow-webserver]
+project-name.svc.id.goog[airflow/airflow-scheduler]
+project-name.svc.id.goog[airflow/airflow-triggerer]
+project-name.svc.id.goog[airflow/airflow-worker]
+```
+
+Next, add the necessary annotations to the Kubernetes Service Accounts by editing the Helm `values.yaml` file.
+
+```yaml
+webserver:
+    podAnnotations:
+        gke-gcsfuse/volumes: "true"
+    serviceAccount:
+        annotations:
+            iam.gke.io/gcp-service-account: <service-account-name>@<project-name>.iam.gserviceaccount.com
+
+scheduler:
+    podAnnotations:
+        gke-gcsfuse/volumes: "true"
+    serviceAccount:
+        annotations:
+            iam.gke.io/gcp-service-account: <service-account-name>@<project-name>.iam.gserviceaccount.com
+
+workers:
+    podAnnotations:
+        gke-gcsfuse/volumes: "true"
+    serviceAccount:
+        annotations:
+            iam.gke.io/gcp-service-account: <service-account-name>@<project-name>.iam.gserviceaccount.com
+
+triggerer:
+    podAnnotations:
+        gke-gcsfuse/volumes: "true"
+    serviceAccount:
+        annotations:
+            iam.gke.io/gcp-service-account: <service-account-name>@<project-name>.iam.gserviceaccount.com
+```
+
+The `podAnnotations` will tell Google to inject the GCS Fuse sidecar container into your pods, and the `serviceAccount` annotations will allow the pods to authenticate with and access your Cloud Storage buckets.
+
+Now, you can create the PersistentVolume (PV) and PersistentVolumeClaim (PVC) that will be used for logging:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: airflow-logs-storage
+spec:
+    accessModes:
+        - ReadWriteMany
+    capacity:
+        storage: 1Gi
+    storageClassName: ""
+    persistentVolumeReclaimPolicy: Retain
+    claimRef:
+        namespace: airflow
+        name: airflow-logs-storage
+    csi:
+        driver: gcsfuse.csi.storage.gke.io
+        volumeHandle: your-gcs-bucket-name # Replace with your GCS bucket name
+        volumeAttributes:
+            bucketName: your-gcs-bucket-name # Replace with your GCS bucket name
+            mountOptions: "implicit-dirs"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: airflow-logs-storage
+    namespace: airflow
+spec:
+    accessModes:
+        - ReadWriteMany
+    resources:
+        requests:
+            storage: 1Gi
+    storageClassName: ""
+    volumeName: airflow-logs-storage
+```
+
+Finally, edit the `logs` section in your `values.yaml` file to use the newly created PVC:
+
+```yaml
+# --- LOGS Storage ---
+logs:
+    persistence:
+        enabled: true
+        existingClaim: airflow-logs-storage # The name of the PVC you created
+
+# If you are using gitSync for your DAGs, your dags section might look like this:
+dags:
+    persistence:
+        enabled: false # This should be false if you use gitSync
+    gitSync:
+        enabled: true
+        repo: <your-git-repo>
+        branch: master
+        ref: HEAD
+        subPath: "dags/" # Optional: if your DAGs are in a subfolder
+        credentialsSecret: <your-secret-name>
+```
+
+And that's how you configure persistent log storage for Apache Airflow in GKE using the GCS Fuse CSI driver.
+
+## References
+
+-   [GKE Documentation: Using the Cloud Storage FUSE CSI Driver](https://cloud.google.com/kubernetes-engine/docs/how-to/cloud-storage-fuse-csi-driver-setup#standard)
