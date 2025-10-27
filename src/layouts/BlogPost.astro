@@ -1,12 +1,11 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-import Content from "@/components/Content.astro";
-import ExternalLink from "@/components/ExternalLink.astro";
 import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
+import ExternalLink from "@/components/ExternalLink.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
@@ -19,129 +18,91 @@ const { title, description, pubDate, updatedDate, heroImage, externalPost } =
         <BaseHead title={title} description={description} />
     </head>
 
-    <body>
+    <body class="bg-background text-foreground">
         <Header />
-        <style is:global>
-            @reference "../styles/global.css";
-            main article.markdown-body {
-                ul {
-                    @apply list-disc list-inside pl-4 mb-4;
-                }
-                h1,
-                h2,
-                h3,
-                h4,
-                h5 {
-                    @apply font-bold font-title mb-1;
-                }
-                h2,
-                h3,
-                h4,
-                h5 {
-                    @apply mt-7;
-                }
-                h1 {
-                    @apply scroll-m-20 text-4xl font-extrabold tracking-tight text-balance;
-                }
-                h2 {
-                    @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;
-                }
-                h3 {
-                    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
-                }
-                h4 {
-                    @apply scroll-m-20 text-xl font-semibold tracking-tight;
-                }
-                p {
-                    @apply leading-7 [&:not(:first-child)]:mt-4;
-                }
-                blockquote {
-                    @apply mt-6 border-l-2 pl-6 italic;
-                }
-                ul {
-                    @apply my-6 ml-6 list-disc [&>li]:mt-2;
-                }
-                img {
-                    @apply border border-slate-300 dark:border-zinc-700 rounded-xl mb-6 mx-auto;
-                }
-                a {
-                    @apply underline underline-offset-2 hover:text-orange-500 decoration-orange-500;
-                }
-                /* code {
-                    @apply bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
-                } */
-
-                /* Inline code styling - keeps your current style */
-                code:not(pre code) {
-                    @apply bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
-                }
-
-                /* Code block styling - theme-aware terminal look */
-                pre {
-                    @apply bg-muted border font-mono text-sm p-4 overflow-hidden;
-                    border-radius: 0; /* Square corners */
-                    white-space: pre-wrap; /* Wrap long lines instead of scrolling */
-                    word-wrap: break-word; /* Break long words */
-                    max-width: 100%;
-                }
-
-                pre code {
-                    @apply bg-transparent p-0 rounded-none font-normal text-foreground;
-                    white-space: pre-wrap;
-                    word-wrap: break-word;
-                }
-            }
-        </style>
-
-        <main class="pt-[56px]">
-            <Content className="pt-6 markdown-body">
-                {
-                    heroImage && (
-                        <div class="mb-8 flex flex-col items-center">
-                            <Image
-                                class="border border-slate-300 dark:border-zinc-700 rounded-xl"
-                                width={1020}
-                                height={510}
-                                src={heroImage.image}
-                                alt=""
-                                transition:name={title}
-                                transition:animate="slide"
-                            />
-
-                            {heroImage && heroImage.source && (
-                                <a href={heroImage.source}>
-                                    Image by {heroImage.owner}
-                                </a>
-                            )}
-                        </div>
-                    )
-                }
-                <h1 class="mt-1 font-title">{title}</h1>
-                <div class="date text-muted-foreground">
-                    <FormattedDate date={pubDate} />
+        <main class="pt-20">
+            <article
+                class="max-w-3xl mx-auto px-6 py-12"
+            >
+                <!-- Post Header: Contains metadata -->
+                <header class="mb-8 text-center">
                     {
-                        updatedDate && (
-                            <div>
-                                Last updated on{" "}
-                                <FormattedDate date={updatedDate} />
+                        heroImage && (
+                            <div class="mb-8">
+                                <Image
+                                    class="w-full h-auto rounded-xl border border-border"
+                                    width={1020}
+                                    height={510}
+                                    src={heroImage.image}
+                                    alt={"heroImage"}
+                                    transition:name={title}
+                                    transition:animate="slide"
+                                />
+                                {heroImage.source && (
+                                    <p class="text-xs text-muted-foreground mt-2">
+                                        Image by{" "}
+                                        <a href={heroImage.source} target="_blank" rel="noopener noreferrer" class="hover:underline">
+                                            {heroImage.owner}
+                                        </a>
+                                    </p>
+                                )}
                             </div>
                         )
                     }
+
+                    <h1
+                        class="text-4xl md:text-5xl font-extrabold tracking-tight text-balance mb-4"
+                    >
+                        {title}
+                    </h1>
+
+                    <p class="text-lg text-muted-foreground mb-4">
+                        {description}
+                    </p>
+
+                    <div class="text-sm text-muted-foreground">
+                        <FormattedDate date={pubDate} />
+                        {
+                            updatedDate && (
+                                <span class="mx-2">&bull;</span>
+                                <span>
+                                    Updated on <FormattedDate
+                                        date={updatedDate}
+                                    />
+                                </span>
+                            )
+                        }
+                    </div>
+
+                    {
+                        externalPost && (
+                            <p class="text-sm text-muted-foreground mt-2">
+                                Also available on{" "}
+                                <ExternalLink href={externalPost}>
+                                    another platform
+                                </ExternalLink>.
+                            </p>
+                        )
+                    }
+                </header>
+
+                <hr class="border-border my-8" />
+
+                <!-- Post Content: Styled with Tailwind Typography -->
+                <div
+                    class="prose prose-lg dark:prose-invert max-w-none 
+                        prose-headings:text-foreground 
+                        prose-p:text-foreground
+                        prose-a:text-orange-500 prose-a:no-underline hover:prose-a:underline
+                        prose-strong:text-foreground
+                        prose-blockquote:border-orange-500 prose-blockquote:text-muted-foreground
+                        prose-li:marker:text-orange-500
+                        prose-code:text-foreground prose-code:bg-muted prose-code:rounded-md prose-code:px-1.5 prose-code:py-1 prose-code:font-mono prose-code:text-sm
+                        "
+                >
+                    <slot />
                 </div>
-                <p class="text-muted-foreground text-xl">{description}</p>
-                {
-                    externalPost && (
-                        <p class="text-muted-foreground text-xl">
-                            You can also read this{" "}
-                            <ExternalLink href={externalPost}>
-                                Here!
-                            </ExternalLink>
-                        </p>
-                    )
-                }
-                <hr class="border-top border-zinc-400 my-4" />
-                <slot />
-            </Content>
+            </article>
         </main>
         <Footer />
     </body>
