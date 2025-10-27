@@ -19,14 +19,12 @@ import SocialLinks from "@/components/SocialLinks.astro";
         <main class="container mx-auto pt-[56px]" transition:animate="fade">
             <Content>
                 <div
-                    class="bg-secondary bg-opacity-40 backdrop-blur-2xl text-center py-3 rounded-lg mb-16 mt-6"
+                    class="bg-orange-300 dark:bg-amber-600 bg-opacity-40 backdrop-blur-2xl text-center py-3 rounded-lg mb-16 mt-6"
                 >
                     <div
                         class="font-title font-bold drop-shadow-lg shadow-black"
                     >
-                        Hello, I'm a <span class="text-secondary-foreground"
-                            >developer</span
-                        > from Indonesia!
+                        Hello, I'm a Software Engineer from Indonesia!
                     </div>
                 </div>
 
@@ -82,8 +80,12 @@ import SocialLinks from "@/components/SocialLinks.astro";
                         valuable experience by working on various projects.
                     </p>
                     <div class="flex justify-center">
-                        <Button variant="default" className="mx-auto font-bold"
-                            ><a href="mailto:me@dimastri.com"
+                        <Button
+                            variant="default"
+                            className="mx-auto font-bold bg-orange-300 dark:bg-amber-600"
+                            ><a
+                                href="mailto:me@dimastri.com"
+                                class="text-slate-800 dark:text-slate-200"
                                 >Contact Me! <span class="ml-2">&gt;</span></a
                             ></Button
                         >

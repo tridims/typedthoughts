@@ -12,31 +12,9 @@ heroImage:
     owner: Michał Jakubowski
 externalPost: "https://tridims.medium.com/percobaan-audit-dan-monitoring-menggunakan-snort-ids-568519a7aaa8"
 shorts: |
+    > Snort adalah IDS/IPS open source yang menggunakan aturan untuk mendeteksi aktivitas jaringan berbahaya. Percobaan ini menunjukkan langkah ringkas instalasi Snort 3 di Ubuntu, konfigurasi interface, pemasangan community rules, serta pengujian dengan Nmap dan serangan DoS (Slowloris).
+    >
     > **TL;DR**: Snort 3 dipasang di Ubuntu, termasuk dependency (libdaq, tcmalloc), dikonfigurasi untuk memantau interface (promiscuous + offload off), dan diberi community rules. Pengujian dengan Nmap dan Slowloris menghasilkan banyak alert — Snort berfungsi sebagai IDS tapi tidak mencegah serangan. Ada masalah logging (file pcap/alert tidak tersimpan) yang perlu diperiksa hak akses dan opsi startup.
-
-    Snort adalah IDS/IPS open source yang menggunakan aturan untuk mendeteksi aktivitas jaringan berbahaya. Percobaan ini menunjukkan langkah ringkas instalasi Snort 3 di Ubuntu, konfigurasi interface, pemasangan community rules, serta pengujian dengan Nmap dan serangan DoS (Slowloris).
-
-    Gambaran Langkah utama:
-    - Pasang dependency: libpcap, pcre, zlib, luajit, libdaq, dll.
-    - Build dan install LibDAQ dan gperftools (tcmalloc) dari source.
-    - Clone dan install Snort3, aktifkan tcmalloc saat konfigurasi.
-    - Set interface ke mode promiscuous dan matikan offloading (ethtool -K) agar Snort melihat paket penuh.
-    - Buat systemd unit untuk menerapkan konfigurasi NIC saat boot.
-    - Download dan include snort3-community.rules ke snort.lua, set HOME_NET sesuai jaringan.
-    - Tes konfigurasi: sudo snort -T -i <iface> -c /usr/local/etc/snort/snort.lua
-    - Jalankan Snort untuk logging: sudo snort -l ./log -L pcap -A fast -q -c … -i <iface>
-
-    Hasil pengujian:
-    - Nmap (TCP SYN scan) memicu alert terkait protokol (mis. PROTOCOL-SNMP).
-    - Slowloris menyebabkan banyak alert (mis. kernel ACK provocation) dan layanan web menjadi tidak dapat diakses — Snort mendeteksi, tetapi dalam mode IDS tidak memblokir serangan.
-    - Ditemui masalah: log/pcap tidak selalu tersimpan — periksa hak akses folder log, opsi -l/-L, dan jalankan Snort dengan hak yang sesuai atau buat direktori log yang disesuaikan.
-
-    Takeaway:
-    - Snort efektif untuk deteksi, tapi untuk pencegahan perlu mode IPS atau integrasi dengan blokir (firewall).  
-    - Pastikan konfigurasi logging dan permission benar agar alert/pcap tersimpan.  
-    - Tuning rules dan false-positive handling diperlukan agar monitoring berguna dalam operasi nyata.
-
-    ---
 ---
 
 Security audit merupakan evaluasi dan penilaian komprehensif sistem informasi di dalam lingkup organisasi\. Biasanya penilaian tersebut mengukur keamanan sistem informasi terhadap daftar periksa praktik audit terbaik industri, standar eksternal, atau peraturan yang berlaku disekitar\. Security Auditing yang menyeluruh akan menilai kontrol keamanan organisasi yang berkaitan dengan komponen fisk dari lingkungan sistem, aplikasi dan perangkat lunak, celah keamanan jaringan, dan dimensi manusia\. Di dalam security cycle, security audit dilakukan setelah proses monitoring\.

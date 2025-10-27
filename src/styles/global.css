@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* my own color */
+@theme {
+    --color-maindark: oklch(0.2404 0.0096 276.67);
+    --color-mainlight: oklch(0.9446 0.0022 17.2);
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @config "../../tailwind.config.cjs";

@@ -12,23 +12,18 @@ heroImage:
 externalPost: "https://tridims.medium.com/mengamankan-website-apache-dengan-lets-encrypt-47658271a5a8"
 shorts: |
     > TL;DR: Pasang Certbot untuk Apache, pastikan ServerName/ServerAlias di VirtualHost benar, buka port HTTPS di firewall, lalu jalankan `sudo certbot --apache`. Certbot akan otomatis mengeluarkan sertifikat dan menyiapkan auto-renewal.
-
-    Butuh SSL gratis untuk website Apache? Let's Encrypt + Certbot membuatnya cepat dan otomatis.
-
-    - Install Certbot (Apache plugin):
-    `sudo apt install certbot python3-certbot-apache`
-    - Pastikan konfigurasi VirtualHost punya ServerName/ServerAlias yang sesuai.
-    - Buka akses HTTPS di firewall (jika menggunakan ufw):
-    `sudo ufw allow 'Apache Full'`
-    - Jalankan Certbot untuk Apache:
-    `sudo certbot --apache`
-    Ikuti prompt untuk memilih domain dan mengaktifkan HTTPS otomatis.
-    - Verifikasi auto-renewal:
-    `sudo certbot renew --dry-run`
-
-    Hasil: sertifikat TLS aktif, konfigurasi Apache diperbarui, dan pembaruan otomatis disiapkan. Cocok untuk deployment cepat pada VPS atau EC2 dengan domain yang valid.
-
-    ---
+    >
+    > **Langkah Singkat:**
+    > - Install Certbot (Apache plugin):
+    > `sudo apt install certbot python3-certbot-apache`
+    > - Pastikan konfigurasi VirtualHost punya ServerName/ServerAlias yang sesuai.
+    > - Buka akses HTTPS di firewall (jika menggunakan ufw):
+    > `sudo ufw allow 'Apache Full'`
+    > - Jalankan Certbot untuk Apache:
+    > `sudo certbot --apache`
+    > Ikuti prompt untuk memilih domain dan mengaktifkan HTTPS otomatis.
+    > - Verifikasi auto-renewal:
+    > `sudo certbot renew --dry-run`
 ---
 
 Let's Encrypt merupakan Certificate Authority yang menyediakan sertifikat TLS/SSL secara gratis\. Mereka menyediakan sebuah tool bernama Certbot untuk memudahkan dan mengotomatiskan langkah yang diperlukan untuk mendapatkan sertifikat\.
