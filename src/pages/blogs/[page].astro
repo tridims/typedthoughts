@@ -7,6 +7,7 @@ import { getCollection } from "astro:content";
 import ArticleList from "@/components/ArticleList.astro";
 import AboutMe from "@/components/AboutMe.astro";
 import Pagination from "@/components/Pagination.astro";
+import Content from "@/components/Content.astro";
 
 export async function getStaticPaths({ paginate }: { paginate: any }) {
     const allPosts = await getCollection("blog");
@@ -49,10 +50,8 @@ const {
     <body class="min-h-screen flex flex-col">
         <Header title={SITE_TITLE} />
         <main class="pt-[56px] flex-1" transition:animate="fade">
-            <article
-                class="mx-auto max-w-3xl my-auto mt-6 flex flex-col md:flex-row"
-            >
-                <div class="w-full md:w-3/4 lg:w-3/5">
+            <Content className="my-auto mt-6 flex flex-row">
+                <div class="w-full">
                     <h1 class="text-3xl font-bold mb-6">
                         Blogs Page {currentPage}
                     </h1>
@@ -67,10 +66,8 @@ const {
                         lastUrl={url.last}
                     />
                 </div>
-
-                <AboutMe />
-            </article>
+            </Content>
+            <Footer />
         </main>
-        <Footer />
     </body>
 </html>
