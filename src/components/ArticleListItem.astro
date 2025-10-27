@@ -12,7 +12,6 @@ const { title, pubDate, shorts } = post.data;
 
 // A helper to format the date like in the example: YYYY-MM-DD
 const formattedDate = new Date(pubDate).toISOString().split("T")[0];
-
 const htmlShorts = await marked.parse(shorts);
 ---
 

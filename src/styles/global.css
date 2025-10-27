@@ -181,3 +181,23 @@ body {
         @apply bg-background text-foreground;
     }
 }
+
+/* used in the layout */
+@layer base {
+    /* Improve code block styling for the 'prose' class */
+    .prose pre {
+        @apply border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm;
+    }
+    
+    /* You can also move your font definitions here for better organization */
+    body {
+        font-family: "Rubik", sans-serif;
+    }
+    .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+        font-family: "Rubik", sans-serif;
+        font-weight: 700;
+    }
+    .prose p, .prose li, .prose blockquote {
+         font-family: "Lora", serif;
+    }
+}
