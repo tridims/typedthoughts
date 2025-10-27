@@ -12,44 +12,32 @@ heroImage:
 externalPost: "https://tridims.medium.com/konfigurasi-dan-pembuatan-self-signed-ssl-certificate-pada-website-ssl-website"
 shorts: |
     > TL;DR: Buat sertifikat self-signed dengan openssl, pasang di Apache (konfigurasi ssl-params dan default-ssl), redirect HTTP→HTTPS, aktifkan modul SSL/header, lalu test — browser akan menampilkan peringatan karena sertifikat tidak diterbitkan CA terpercaya. Untuk produksi, gunakan Let's Encrypt.
-
-    SSL/TLS mengenkripsi trafik web dan mengubah URL menjadi HTTPS. Untuk eksperimen atau pengujian lokal/VM, Anda bisa membuat sertifikat yang ditandatangani sendiri (self-signed) dan mengonfigurasikan Apache agar melayani situs via HTTPS.
-
-    Langkah ringkas:
-
-    1. Buat sertifikat dan private key
-    ```bash
-    sudo openssl req -x509 -nodes -days 365 \
-      -newkey rsa:2048 \
-      -keyout /etc/ssl/private/apache-selfsigned.key \
-      -out /etc/ssl/certs/apache-selfsigned.crt
-    ```
-
-    2. Tambahkan parameter keamanan (contoh: /etc/apache2/conf-available/ssl-params.conf)
-    - Batasi protokol dan cipher, set header keamanan, matikan kompresi SSL, aktifkan stapling.
-
-    3. Update VirtualHost SSL (/etc/apache2/sites-available/default-ssl.conf)
-    - Set SSLCertificateFile dan SSLCertificateKeyFile ke path hasil openssl.
-    - Pastikan ServerName, ServerAdmin, DocumentRoot benar.
-
-    4. Redirect HTTP → HTTPS
-    - Tambahkan directive Redirect di 000-default.conf untuk memaksa HTTPS.
-
-    5. Aktifkan di Apache
-    ```bash
-    sudo a2enmod ssl
-    sudo a2enmod headers
-    sudo a2ensite default-ssl
-    sudo a2enconf ssl-params
-    sudo apache2ctl configtest
-    sudo systemctl reload apache2
-    ```
-
-    6. Testing & catatan
-    - Browser akan menampilkan peringatan NET::ERR_CERT_AUTHORITY_INVALID karena sertifikat tidak dikeluarkan CA publik.
-    - Self-signed cocok untuk pengujian; untuk situs publik gunakan Let's Encrypt atau CA terpercaya.
-
-    ---
+    >
+    > Langkah singkat:
+    >
+    > 1. Buat sertifikat dan private key
+    > ```bash
+    > sudo openssl req -x509 -nodes -days 365 \
+    > -newkey rsa:2048 \
+    > -keyout /etc/ssl/private/apache-selfsigned.key \
+    > -out /etc/ssl/certs/apache-selfsigned.crt
+    > ```
+    > 2. Tambahkan parameter keamanan (contoh: /etc/apache2/conf-available/ssl-params.conf)
+    > - Batasi protokol dan cipher, set header keamanan, matikan kompresi SSL, aktifkan stapling.
+    > 3. Update VirtualHost SSL (/etc/apache2/sites-available/default-ssl.conf)
+    > - Set SSLCertificateFile dan SSLCertificateKeyFile ke path hasil openssl.
+    > - Pastikan ServerName, ServerAdmin, DocumentRoot benar.
+    > 4. Redirect HTTP → HTTPS
+    > - Tambahkan directive Redirect di 000-default.conf untuk memaksa HTTPS.
+    > 5. Aktifkan di Apache
+    > ```bash
+    > sudo a2enmod ssl
+    > sudo a2enmod headers
+    > sudo a2ensite default-ssl
+    > sudo a2enconf ssl-params
+    > sudo apache2ctl configtest
+    > sudo systemctl reload apache2
+    > ```
 ---
 
 SSL/TLS merupakan salah satu komponen penting yang harus dimiliki website\. Dengan SSL, transfer data di dalam website menjadi lebih aman dan terenkripsi\. Ketika sistem keamanan ini ditambahkan ke dalam sebuah website, maka URL website akan berubah menjadi HTTPS\. SSL/TLS sendiri diaplikasikan dengan cara menggunakan sebuah sertifikat SSL\. Sertifikat ini mengaplikasikan konsep kriptografi asimetrik dimana terdapat public key dan private key yang digunakan\. SSL/TLS dapat mengamankan data saat berkomunikasi dengan web dan menjamin bahwa website yang diakses adalah yang asli\.
