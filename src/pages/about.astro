@@ -16,7 +16,7 @@ import SocialLinks from "@/components/SocialLinks.astro";
     </head>
     <body>
         <Header title="About me!" />
-        <main class="container mx-auto pt-[56px]" transition:animate="fade">
+        <main class="container mx-auto pt-14" transition:animate="fade">
             <Content>
                 <div
                     class="bg-orange-300 dark:bg-amber-600 bg-opacity-40 backdrop-blur-2xl text-center py-3 rounded-lg mb-16 mt-6"
@@ -43,11 +43,11 @@ import SocialLinks from "@/components/SocialLinks.astro";
                         <ExternalLink class="text-secondary-foreground"
                             >me@dimastri.com</ExternalLink
                         >
-                        <div class="mt-4">
+                        <div class="mt-4 flex justify-center md:justify-start">
                             <SocialLinks showLabels={true} />
                         </div>
                     </div>
-                    <div class="flex-shrink-0">
+                    <div class="shrink-0">
                         <img
                             src="/images/cat.jpeg"
                             alt="Dimas Tri Mustakim"
@@ -96,7 +96,7 @@ import SocialLinks from "@/components/SocialLinks.astro";
                     <h2 class="font-title text-2xl font-bold mb-3">Bio</h2>
                     <div class="flex flex-col gap-2">
                         <div class="flex">
-                            <span class="font-semibold w-30 flex-shrink-0"
+                            <span class="font-semibold w-30 shrink-0"
                                 >2020-2024</span
                             >
                             <span
@@ -107,7 +107,7 @@ import SocialLinks from "@/components/SocialLinks.astro";
                             </span>
                         </div>
                         <div class="flex">
-                            <span class="font-semibold w-30 flex-shrink-0"
+                            <span class="font-semibold w-30 shrink-0"
                                 >2022-2024</span
                             >
                             <span>
@@ -121,7 +121,7 @@ import SocialLinks from "@/components/SocialLinks.astro";
                             </span>
                         </div>
                         <div class="flex">
-                            <span class="font-semibold w-30 flex-shrink-0"
+                            <span class="font-semibold w-30 shrink-0"
                                 >2023-2024</span
                             >
                             <span>
@@ -130,7 +130,7 @@ import SocialLinks from "@/components/SocialLinks.astro";
                             </span>
                         </div>
                         <div class="flex">
-                            <span class="font-semibold w-30 flex-shrink-0"
+                            <span class="font-semibold w-30 shrink-0"
                                 >2024-Now</span
                             >
                             <span>
@@ -143,9 +143,9 @@ import SocialLinks from "@/components/SocialLinks.astro";
                     </div>
                 </section>
 
-                <section class="mb-10">
+                <section class="mb-10 text-justify">
                     <h2 class="font-title text-2xl font-bold mb-3">I ❤️</h2>
-                    <p class="indent-14">
+                    <p class="indent-14 leading-relaxed">
                         My hobbies are quite diverse, and I particularly enjoy
                         building things using a wide range of tech stacks. I
                         love exploring various tech-related subjects, trying out
