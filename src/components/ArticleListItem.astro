@@ -16,7 +16,11 @@ const htmlShorts = await marked.parse(shorts);
 ---
 
 <article>
-    <a href={`/blogs/${post.id}/`} class="block group py-4">
+    <a
+        href={`/blogs/${post.id}/`}
+        class="block group py-4"
+        data-astro-prefetch="viewport"
+    >
         <time
             datetime={pubDate.toISOString()}
             class="font-mono text-sm text-muted"
