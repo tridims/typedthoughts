@@ -23,4 +23,8 @@ export default defineConfig({
         },
     },
     integrations: [mdx(), sitemap(), react()],
+    prefetch: {
+        prefetchAll: false,
+        defaultStrategy: 'hover'
+    }
 });
