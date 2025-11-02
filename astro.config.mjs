@@ -6,13 +6,17 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
+import expressiveCode from "astro-expressive-code";
+
 // https://astro.build/config
 export default defineConfig({
     vite: {
         plugins: [tailwindcss()],
     },
     site: "https://dimastri.com",
-    integrations: [mdx(), sitemap(), react()],
+    integrations: [expressiveCode({
+        themes: ['dracula', 'solarized-dark']
+    }), mdx(), sitemap(), react()],
     prefetch: {
         prefetchAll: false,
         defaultStrategy: 'hover'
