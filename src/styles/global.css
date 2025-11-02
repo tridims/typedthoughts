@@ -189,7 +189,7 @@ body {
         text-rendering: optimizeLegibility;
     }
 
-    .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    /* .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
         font-family: "Rubik", sans-serif;
         font-weight: 700;
         -webkit-font-smoothing: antialiased;
@@ -199,5 +199,5 @@ body {
          font-family: "Lora", serif;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
-    }
+    } */
 }
