@@ -1,0 +1,77 @@
+---
+title: "Analyzing Web APIs: Turning Network Logs into OpenAPI Specs"
+author: "Dimas Tri Mustakim"
+pubDate: "2025-11-03"
+updateDate: "2025-11-03"
+categories: ["API Analysis", "OpenAPI", "Network Logs", "Web Development"]
+tags: ["API Analysis", "OpenAPI", "Network Logs", "Web Development"]
+description: "To understand how a website's API works, open your browser's developer tools, record network traffic while using the site, and export it as a HAR file. Then, use the har-to-openapi library with a simple script to automatically convert that HAR file into an OpenAPI (Swagger) specification, which you can easily view and analyze in tools like Swagger Editor."
+shorts: |
+    > Ever wondered how a complex website's API is structured? Discover a quick technique to turn browser network logs into a complete OpenAPI specification, giving you an inside look at how modern web apps are built.
+---
+
+One of my favorite things to do to learn about web technologies and practices is to reverse engineer and analyze existing websites that look good. If a website is open-source, we can take a look at the code, but if not, we can at least analyze the API traffic, if it has one. By doing this, we can gain insight into how people build things in web technology.
+
+Previously, I had two ways of doing this, ranging from manually watching the Network tab in my browser's developer tools to using specialized tools like Burp Suite. There might be something better, and please let me know if you know of one! :). Recently, I discovered a new, simple way to do this.
+
+Basically, we will capture the log data from the browser while accessing the website, then convert it into the OpenAPI format using a neat open-source library. The resulting OpenAPI file can then be easily opened using tools like Swagger.
+
+## Capturing a Website into a HAR File
+
+Here's how to do it:
+
+1.  Prepare your browser:
+    1.  Go to the target website.
+    2.  Open Developer Tools (or Inspect Element) and navigate to the **Network** tab.
+    3.  **Ensure "Preserve log" is checked.**
+2.  Next, capture the requests for the website by interacting with its features.
+    1.  For example, if I want to know how they handle API requests for login, then I would try to log in, register, log out, view profile pages, and other related functions.
+    2.  Verify that the requests are being captured in the Network tab.
+3.  Filter the requests in the Network tab to display only the API requests.
+    1.  Usually, API requests use an endpoint like `api.example.com` or `example.com/api`.
+4.  Right-click on the list of requests, then select **Copy > Copy all as HAR**.
+
+## Converting HAR Files to an OpenAPI Spec
+
+To do this, I will use this tool from jonluca:
+
+https://github.com/jonluca/har-to-openapi
+
+Here is a simple script to convert the HAR files:
+
+```typescript title="convert.ts"
+import { generateSpec } from "har-to-openapi";
+
+const harFile = process.argv[2];
+
+if (!harFile) {
+    console.log("Usage: bun run convert.ts <har-file>");
+    process.exit(1);
+}
+
+const har = await Bun.file(harFile).json();
+const { spec, yamlSpec } = await generateSpec(har, {
+    relaxedMethods: true,
+    attemptToParameterizeUrl: true,
+});
+
+const baseName = harFile.replace(".har", "");
+await Bun.write(`${baseName}.json`, JSON.stringify(spec, null, 2));
+await Bun.write(`${baseName}.yaml`, yamlSpec);
+
+console.log(`✓ Generated ${baseName}.json and ${baseName}.yaml`);
+```
+
+Install the dependency and run the script:
+
+```bash {2, 5}
+# Install dependency
+bun add har-to-openapi
+
+# Run the script
+bun run convert.ts my-api.har
+```
+
+## Viewing the OpenAPI Specification
+
+To view and interact with this specification, you can use a tool like the Swagger Editor (https://editor.swagger.io). Besides viewing it, you can also convert the specification into client code for various languages. You can refer to this website (https://openapi.tools) to search for other neat tools for working with OpenAPI specs.
