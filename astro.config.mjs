@@ -8,6 +8,8 @@ import { defineConfig } from "astro/config";
 
 import expressiveCode from "astro-expressive-code";
 
+import svelte from "@astrojs/svelte";
+
 // https://astro.build/config
 export default defineConfig({
     vite: {
@@ -16,7 +18,7 @@ export default defineConfig({
     site: "https://dimastri.com",
     integrations: [expressiveCode({
         themes: ['dracula', 'solarized-dark']
-    }), mdx(), sitemap(), react()],
+    }), mdx(), sitemap(), react(), svelte()],
     prefetch: {
         prefetchAll: false,
         defaultStrategy: 'hover'
