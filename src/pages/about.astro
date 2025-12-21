@@ -6,6 +6,8 @@ import Button from "@/components/ui/button.astro";
 import Footer from "@/components/footer/Footer.astro";
 import ExternalLink from "@/components/utils/ExternalLink.astro";
 import SocialLinks from "@/components/utils/SocialLinks.astro";
+import { Image } from "astro:assets";
+import SocialImage from "@/assets/cat.jpeg";
 ---
 
 <!doctype html>
@@ -47,9 +49,9 @@ import SocialLinks from "@/components/utils/SocialLinks.astro";
                         </div>
                     </div>
                     <div class="shrink-0">
-                        <img
-                            src="/images/cat.jpeg"
-                            alt="Dimas Tri Mustakim"
+                        <Image
+                            src={SocialImage}
+                            alt="Profile Image"
                             class="rounded-full w-40 h-40 object-cover shadow-lg"
                         />
                     </div>
