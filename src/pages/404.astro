@@ -1,10 +1,10 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
-import Content from "../components/Content.astro";
-import { IoArrowForward, IoChevronForward } from "react-icons/io5";
+import BaseHead from "@/components/header/BaseHead.astro";
+import Header from "@/components/header/Header.astro";
+import Footer from "@/components/footer/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/consts";
+import Content from "@/components/body/Content.astro";
+import { IoChevronForward } from "react-icons/io5";
 ---
 
 <!doctype html>
@@ -13,10 +13,10 @@ import { IoArrowForward, IoChevronForward } from "react-icons/io5";
         <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
     </head>
     <body
-        class="bg-mainlight text-maindark dark:bg-maindark dark:text-mainlight break-words leading-6 transition-colors duration-500"
+        class="bg-mainlight text-maindark dark:bg-maindark dark:text-mainlight wrap-break-word leading-6 transition-colors duration-500"
     >
         <Header title={SITE_TITLE} />
-        <main class="pt-[56px]">
+        <main class="pt-14">
             <Content>
                 <section>
                     <h1 class="text-3xl text-center font-title mt-12 mb-8">
