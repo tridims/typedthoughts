@@ -1,5 +1,8 @@
 ---
 import { FaLinkedin, FaMedium, FaGithub } from "react-icons/fa";
+import { Image } from "astro:assets";
+
+import socialImage from "../../assets/cat.jpeg";
 
 const socialLinks = [
     {
@@ -29,10 +32,10 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
 ---
 
 <div class="flex flex-col md:flex-row items-center gap-4 mb-4 top-20">
-    <img
-        src="/images/cat.jpeg"
-        alt="Dimas Tri Mustakim"
-        class="w-20 h-20 sm:w-26 sm:h-26 rounded-3xl object-cover flex-shrink-0"
+    <Image
+        src={socialImage}
+        alt="Personal Image"
+        class="w-20 h-20 sm:w-26 sm:h-26 rounded-3xl object-cover shrink-0"
     />
     <div class="text-center sm:text-left">
         <p class="text-sm sm:text-lg text-primary-background">
@@ -66,7 +69,7 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
                         rel="noopener noreferrer"
                         class="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8 text-foreground hover:text-popover transition-colors"
                     >
-                        <Icon className="text-3xl sm:text-4xl flex-shrink-0" />
+                        <Icon className="text-3xl sm:text-4xl shrink-0" />
                         <span class="font-sans text-base sm:text-xl font-medium tracking-tight truncate">
                             {linkedIn.handle}
                         </span>
@@ -83,7 +86,7 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-foreground hover:text-popover transition-colors flex-shrink-0"
+                    class="text-foreground hover:text-popover transition-colors shrink-0"
                 >
                     <Icon className="text-2xl sm:text-3xl" />
                 </a>

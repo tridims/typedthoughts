@@ -1,5 +1,5 @@
 ---
-import ThemeToggle from "./react/ThemeToggle";
+import ThemeToggle from "./ThemeToggle.astro";
 import Logo from "./Logo.astro";
 ---
 
@@ -8,7 +8,7 @@ import Logo from "./Logo.astro";
         <nav class="flex items-center gap-3 text-base">
             <Logo />
             <div class="flex-1"></div>
-            <ThemeToggle client:visible />
+            <ThemeToggle />
         </nav>
     </div>
 </header>

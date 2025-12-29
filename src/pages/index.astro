@@ -1,13 +1,12 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/consts";
 import { getCollection } from "astro:content";
-import Content from "@/components/Content.astro";
-import RevealOnScroll from "@/components/react/RevealOnScroll";
-import ArticleList from "@/components/ArticleList.astro";
-import AboutMe from "@/components/AboutMe.astro";
+
+import BaseHead from "@/components/header/BaseHead.astro";
+import Header from "@/components/header/Header.astro";
+import Footer from "@/components/footer/Footer.astro";
+import ArticleList from "@/components/blogs/ArticleList.astro";
+import AboutMe from "@/components/about/AboutMe.astro";
 
 const allPosts = (await getCollection("blog")).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -25,7 +24,7 @@ const hasMorePosts = allPosts.length > 3;
     </head>
     <body class="min-h-screen flex flex-col">
         <Header title={SITE_TITLE} />
-        <main class="pt-[56px] flex-1" transition:animate="fade">
+        <main class="pt-14 flex-1" transition:animate="fade">
             <article
                 class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 my-auto mt-6 flex flex-col md:flex-row"
             >
