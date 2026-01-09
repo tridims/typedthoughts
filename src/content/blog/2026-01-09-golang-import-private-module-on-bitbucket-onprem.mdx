@@ -1,0 +1,97 @@
+---
+title: "Importing a private Go module hosted on an on-premises Bitbucket server."
+author: "Dimas Tri Mustakim"
+pubDate: "2026-01-09"
+updateDate: "2026-01-09"
+categories: ["Go", "Bitbucket", "Private Modules", "Development"]
+tags: ["Go", "Bitbucket", "Private Modules", "Development"]
+description: "My current company uses an on-premises Bitbucket to host a private Go module. We're having some difficulty setting up local development and CI/CD. I thought I'd share how we do it here."
+shorts: |
+    > The process is as follows: set up the module name correctly in the go.mod file, configure URL rewriting and authentication, then set the GOPRIVATE environment variables.
+---
+
+This article assumes that you have a bitbucket server which accessible via on `bitbucket.server` and is accessible using either SSH or HTTPS.
+
+## Setup the module we want to import
+
+First we need to setup the module that we want to import correctly in the Bitbucket. If you don't already have the repo/module you need to initialize it with the full domain and path for the repository that looked like this.
+
+```sh
+# assuming you want to create a git repo at bitbucket.server/myproject/mymodule
+go mod init bitbucket.server/myproject/mymodule
+```
+
+If you already have the repo, you need to make sure that the module name in `go.mod` file is in the correct format, like `bitbucket.server/myproject/mymodule`. You also have an options to add version tags in git. The tag is optional, but it's good to have. The tags will be used to specify the version of the module and will be noted in the `go.mod` file. Here's the example on how to add it.
+
+```sh
+git tag v0.0.1
+git add .
+git push --tags
+```
+
+## Configuring URL Rewriting
+
+To make this works with either SSH or HTTPS when using the same clean URL in the bitbucket, we need to configure some URL rewriting. This is different between ssh and https.
+
+### Using SSH
+
+To tell git to use SSH instead of HTTP for `bitbucket.server` access. The `/scm/` part is important, since Bitbucket includes this URL part for HTTPS access but not for SSH.
+
+```sh
+git config --global url."ssh://git@bitbucket.server/".insteadOf "https://bitbucket.server/scm/"
+```
+
+Usually, the bitbucket is configured to listen to some custom port for the ssh. In this case, you need to tell your ssh client to use the custom port for the `bitbucket.server` . Edit the `~/.ssh/config` file (create new if it doesn't exists).
+
+```
+Host bitbucket.server
+HostName bitbucket.server
+Port <PORT>
+```
+
+### Using HTTPS
+
+Here, we need to remote the `/scm/` part to make it refer to the same bitbucket server as the ssh counterpart.
+
+```sh
+git config --global url."https://bitbucket.server/scm/".insteadOf "https://bitbucket.server/"
+```
+
+After that, we need to configure the authentication. The recommended way is by using git credential helper.
+
+1. Run git config --global credential.helper store (Linux) or ensure your system helper is active (Win/Mac).
+2. Manually git clone any private repo from your Bitbucket server once using the terminal.
+3. Enter your Username and **Personal Access Token (PAT)** (preferred over password).
+4. Git saves this. Now go get can read these credentials automatically.
+
+## Set GOPRIVATE
+
+Next, Inform the golang dependency management that any package from `bitbucket.server` is a private one
+
+```sh
+export GOPRIVATE=my-bitbucket.server
+
+# Optionally, you can add that export command to your shell's rc files
+echo 'export GOPRIVATE=my-bitbucket.server' >> ~/.bash_profile
+```
+
+## Test and try getting the private module
+
+Test by adding/importing the module in the project you need it from.
+
+```go
+import (
+  ...
+  "bitbucket.server/myproject/mymodule"
+)
+```
+
+or
+
+```sh
+go get bitbucket.server/myproject/mymodule@v0.0.1
+```
+
+## Attribution
+
+I solve the problem by reading this article https://www.reddit.com/r/golang/comments/e9q2jr/private_repositories_with_onpremise_bitbucket/ and thought to write my own version of the article, and change/add things here and there. Thanks and credits to the original author: [nanotimezone](https://www.reddit.com/user/nanotimezone/)
