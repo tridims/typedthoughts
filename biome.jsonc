@@ -1,7 +1,28 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
-  "extends": ["ultracite"],
+  "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+  "extends": [
+    "ultracite/biome/core",
+    "ultracite/biome/astro"
+  ],
   "files": {
-    "includes": ["!**/astro.config.mjs"]
-  }
+    "includes": [
+      "**",
+      "!!**/dist",
+      "!!**/.astro",
+      "!**/astro.config.mjs"
+    ]
+  },
+  "overrides": [
+    {
+      // Astro components conventionally use PascalCase filenames
+      "includes": ["**/*.astro"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useFilenamingConvention": "off"
+          }
+        }
+      }
+    }
+  ]
 }
