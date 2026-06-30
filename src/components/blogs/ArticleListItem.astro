@@ -2,6 +2,7 @@
 // src/components/ArticleListItem.astro
 import type { CollectionEntry } from "astro:content";
 import { marked } from "marked";
+import { formatReadingTime } from "@/lib/readingTime";
 import Tag from "./Tag.astro";
 
 interface Props {
@@ -13,6 +14,7 @@ const { title, pubDate, shorts, tags } = post.data;
 
 // A helper to format the date like in the example: YYYY-MM-DD
 const formattedDate = new Date(pubDate).toISOString().split("T")[0];
+const readingTime = formatReadingTime(post.body);
 const htmlShorts = await marked.parse(shorts);
 ---
 
@@ -25,6 +27,8 @@ const htmlShorts = await marked.parse(shorts);
     <time class="font-mono text-sm text-muted" datetime={pubDate.toISOString()}>
       {formattedDate}
     </time>
+    <span class="font-mono text-sm text-muted mx-2" aria-hidden="true">&middot;</span>
+    <span class="font-mono text-sm text-muted">{readingTime}</span>
     <h2
       class="text-xl font-bold text-foreground mt-2 group-hover:text-popover transition-colors duration-300 flex items-center gap-2"
     >
