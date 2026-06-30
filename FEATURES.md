@@ -31,7 +31,7 @@ Features to add to typedthoughts-astro, ordered by priority.
 **What to do:**
 - Create `/uses` page at `src/pages/uses.astro`
 - Organize into sections: Hardware, Daily Software, Dev Tools, Homelab, etc.
-- Add a link to it in the Header nav
+- Add a new button / section under the about me section in the index home pages. Under the browse tags section
 
 **Files to touch:**
 - `src/pages/uses.astro` (new)
