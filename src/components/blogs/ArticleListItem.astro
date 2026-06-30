@@ -1,10 +1,10 @@
 ---
 // src/components/ArticleListItem.astro
-import { type CollectionEntry } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 import { marked } from "marked";
 
 interface Props {
-    post: CollectionEntry<"blog">;
+  post: CollectionEntry<"blog">;
 }
 
 const { post } = Astro.props;
@@ -16,29 +16,26 @@ const htmlShorts = await marked.parse(shorts);
 ---
 
 <article>
-    <a
-        href={`/blogs/${post.id}/`}
-        class="block group py-4"
-        data-astro-prefetch="viewport"
+  <a
+    class="block group py-4"
+    data-astro-prefetch="viewport"
+    href={`/blogs/${post.id}/`}
+  >
+    <time class="font-mono text-sm text-muted" datetime={pubDate.toISOString()}>
+      {formattedDate}
+    </time>
+    <h2
+      class="text-xl font-bold text-foreground mt-2 group-hover:text-popover transition-colors duration-300 flex items-center gap-2"
     >
-        <time
-            datetime={pubDate.toISOString()}
-            class="font-mono text-sm text-muted"
-        >
-            {formattedDate}
-        </time>
-        <h2
-            class="text-xl font-bold text-foreground mt-2 group-hover:text-popover transition-colors duration-300 flex items-center gap-2"
-        >
-            {title.toUpperCase()}
-            <span
-                class="text-popover opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-2 group-hover:translate-x-0"
-                >↗</span
-            >
-        </h2>
-        <div
-            class="text-foreground mt-3 prose prose-blockquote:text-foreground"
-            set:html={htmlShorts}
-        />
-    </a>
+      {title.toUpperCase()}
+      <span
+        class="text-popover opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-2 group-hover:translate-x-0"
+        >↗</span
+      >
+    </h2>
+    <div
+      class="text-foreground mt-3 prose prose-blockquote:text-foreground"
+      set:html={htmlShorts}
+    />
+  </a>
 </article>

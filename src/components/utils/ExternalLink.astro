@@ -7,18 +7,18 @@ const { href, class: className, ...props } = Astro.props;
 ---
 
 <a
-    class="group relative inline"
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
+  class="group relative inline"
+  href={href}
+  rel="noopener noreferrer"
+  target="_blank"
 >
-    <span
-        class={`relative z-10 group-hover:text-secondary-foreground ${className}`}
-    >
-        <slot />
-        <!-- <FaExternalLinkAlt className="inline text-xs pl-0.5 pb-1 mb-1" /> -->
-    </span>
-    <span
-        class="absolute left-0 right-0 bottom-0 h-0.5 transition-all bg-accent z-0 group-hover:h-full"
-    ></span>
+  <span
+    class={`relative z-10 group-hover:text-secondary-foreground ${className}`}
+  >
+    <slot />
+    <!-- <FaExternalLinkAlt className="inline text-xs pl-0.5 pb-1 mb-1" /> -->
+  </span>
+  <span
+    class="absolute left-0 right-0 bottom-0 h-0.5 transition-all bg-accent z-0 group-hover:h-full"
+  ></span>
 </a>

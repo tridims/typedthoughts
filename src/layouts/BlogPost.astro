@@ -1,35 +1,30 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-
-import BaseHead from "@/components/header/BaseHead.astro";
 import Footer from "@/components/footer/Footer.astro";
+import BaseHead from "@/components/header/BaseHead.astro";
 import Header from "@/components/header/Header.astro";
-
-import FormattedDate from "@/components/utils/FormattedDate.astro";
 import ExternalLink from "@/components/utils/ExternalLink.astro";
+import FormattedDate from "@/components/utils/FormattedDate.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
 const { title, description, pubDate, updatedDate, heroImage, externalPost } =
-    Astro.props;
+  Astro.props;
 ---
 
 <html lang="en">
-    <head>
-        <BaseHead title={title} description={description} />
-    </head>
+  <head>
+    <BaseHead description={description} title={title} />
+  </head>
 
-    <body class="bg-background text-foreground">
-        <Header />
-        <main class="pt-20">
-            <article
-                class="max-w-3xl mx-auto px-6 py-12"
-            >
-                <!-- Post Header: Contains metadata -->
-                <header class="mb-8 text-center">
-                    {
-                        heroImage && (
+  <body class="bg-background text-foreground">
+    <Header />
+    <main class="pt-20">
+      <article class="max-w-3xl mx-auto px-6 py-12">
+        <!-- Post Header: Contains metadata -->
+        <header class="mb-8 text-center">
+          {heroImage && (
                             <div class="mb-8">
                                 <Image
                                     class="w-full h-auto rounded-xl border border-border"
@@ -49,50 +44,45 @@ const { title, description, pubDate, updatedDate, heroImage, externalPost } =
                                     </p>
                                 )}
                             </div>
-                        )
-                    }
+                        )}
 
-                    <h1
-                        class="text-4xl md:text-5xl font-extrabold tracking-tight text-balance mb-4"
-                    >
-                        {title}
-                    </h1>
+          <h1
+            class="text-4xl md:text-5xl font-extrabold tracking-tight text-balance mb-4"
+          >
+            {title}
+          </h1>
 
-                    <p class="text-lg text-muted-foreground mb-4">
-                        {description}
-                    </p>
+          <p class="text-lg text-muted-foreground mb-4">
+            {description}
+          </p>
 
-                    <div class="text-sm text-muted-foreground">
-                        <FormattedDate date={pubDate} />
-                        {
-                            updatedDate && (
+          <div class="text-sm text-muted-foreground">
+            <FormattedDate date={pubDate} />
+            {updatedDate && (
                                 <span class="mx-2">&bull;</span>
                                 <span>
                                     Updated on <FormattedDate
                                         date={updatedDate}
                                     />
                                 </span>
-                            )
-                        }
-                    </div>
+                            )}
+          </div>
 
-                    {
-                        externalPost && (
+          {externalPost && (
                             <p class="text-sm text-muted-foreground mt-2">
                                 Also available on{" "}
                                 <ExternalLink href={externalPost}>
                                     another platform
                                 </ExternalLink>.
                             </p>
-                        )
-                    }
-                </header>
+                        )}
+        </header>
 
-                <hr class="border-border my-8" />
+        <hr class="border-border my-8">
 
-                <!-- Post Content: Styled with Tailwind Typography -->
-                <div
-                    class="prose prose-lg dark:prose-invert max-w-none 
+        <!-- Post Content: Styled with Tailwind Typography -->
+        <div
+          class="prose prose-lg dark:prose-invert max-w-none 
                         prose-headings:text-foreground 
                         prose-p:text-foreground
                         prose-a:text-orange-500 prose-a:no-underline hover:prose-a:underline
@@ -101,11 +91,11 @@ const { title, description, pubDate, updatedDate, heroImage, externalPost } =
                         prose-li:marker:text-orange-500
                         prose-code:rounded-md prose-code:px-1.5 prose-code:py-1 prose-code:font-mono prose-code:text-sm
                         "
-                >
-                    <slot />
-                </div>
-            </article>
-        </main>
-        <Footer />
-    </body>
+        >
+          <slot />
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
 </html>

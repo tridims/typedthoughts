@@ -1,28 +1,28 @@
 ---
-import { FaLinkedin, FaMedium, FaGithub } from "react-icons/fa";
 import { Image } from "astro:assets";
+import { FaGithub, FaLinkedin, FaMedium } from "react-icons/fa";
 
 import socialImage from "../../assets/cat.jpeg";
 
 const socialLinks = [
-    {
-        name: "GitHub",
-        href: "https://github.com/tridims",
-        icon: FaGithub,
-        handle: "@tridims",
-    },
-    {
-        name: "LinkedIn",
-        href: "https://linkedin.com/in/dimastrim",
-        icon: FaLinkedin,
-        handle: "@dimastrim",
-    },
-    {
-        name: "Medium",
-        href: "https://medium.com/@tridims",
-        icon: FaMedium,
-        handle: "@tridims",
-    },
+  {
+    name: "GitHub",
+    href: "https://github.com/tridims",
+    icon: FaGithub,
+    handle: "@tridims",
+  },
+  {
+    name: "LinkedIn",
+    href: "https://linkedin.com/in/dimastrim",
+    icon: FaLinkedin,
+    handle: "@dimastrim",
+  },
+  {
+    name: "Medium",
+    href: "https://medium.com/@tridims",
+    icon: FaMedium,
+    handle: "@tridims",
+  },
 ];
 
 const linkedIn = socialLinks.find((link) => link.name === "LinkedIn");
@@ -32,33 +32,32 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
 ---
 
 <div class="flex flex-col md:flex-row items-center gap-4 mb-4 top-20">
-    <Image
-        src={socialImage}
-        alt="Personal Image"
-        class="w-20 h-20 sm:w-26 sm:h-26 rounded-3xl object-cover shrink-0"
-    />
-    <div class="text-center sm:text-left">
-        <p class="text-sm sm:text-lg text-primary-background">
-            Software Engineer, Toolmaker, Homelab Enthusiast
-        </p>
-    </div>
+  <Image
+    alt="Personal Image"
+    class="w-20 h-20 sm:w-26 sm:h-26 rounded-3xl object-cover shrink-0"
+    src={socialImage}
+  />
+  <div class="text-center sm:text-left">
+    <p class="text-sm sm:text-lg text-primary-background">
+      Software Engineer, Toolmaker, Homelab Enthusiast
+    </p>
+  </div>
 </div>
 
 <a
-    href="/about"
-    class="inline-block w-full text-center border border-neutral-700 rounded-lg px-4 py-2 text-sm text-foreground hover:bg-popover transition-colors mb-8"
-    data-astro-prefetch
+  class="inline-block w-full text-center border border-neutral-700 rounded-lg px-4 py-2 text-sm text-foreground hover:bg-popover transition-colors mb-8"
+  data-astro-prefetch
+  href="/about"
 >
-    About Me &rarr;
+  About Me &rarr;
 </a>
 
 <h3 class="font-semibold text-foreground mb-4 md:block hidden">Follow</h3>
 <div
-    class="flex flex-col items-center border border-neutral-700 rounded-2xl p-4 sm:p-8 shadow-lg"
+  class="flex flex-col items-center border border-neutral-700 rounded-2xl p-4 sm:p-8 shadow-lg"
 >
-    <!-- Top Row: LinkedIn -->
-    {
-        linkedIn &&
+  <!-- Top Row: LinkedIn -->
+  {linkedIn &&
             (() => {
                 const Icon = linkedIn.icon;
 
@@ -75,13 +74,11 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
                         </span>
                     </a>
                 );
-            })
-    }
+            })}
 
-    <!-- Middle Row: Other Social Icons -->
-    <div class="flex flex-wrap items-center gap-3 sm:gap-5">
-        {
-            otherLinks.map(({ href, icon: Icon }) => (
+  <!-- Middle Row: Other Social Icons -->
+  <div class="flex flex-wrap items-center gap-3 sm:gap-5">
+    {otherLinks.map(({ href, icon: Icon }) => (
                 <a
                     href={href}
                     target="_blank"
@@ -90,11 +87,10 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
                 >
                     <Icon className="text-2xl sm:text-3xl" />
                 </a>
-            ))
-        }
+            ))}
 
-        <span class="text-foreground text-sm ml-0 font-medium truncate">
-            {generalHandle}
-        </span>
-    </div>
+    <span class="text-foreground text-sm ml-0 font-medium truncate">
+      {generalHandle}
+    </span>
+  </div>
 </div>

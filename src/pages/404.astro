@@ -1,37 +1,37 @@
 ---
+import { IoChevronForward } from "react-icons/io5";
+import Content from "@/components/body/Content.astro";
+import Footer from "@/components/footer/Footer.astro";
 import BaseHead from "@/components/header/BaseHead.astro";
 import Header from "@/components/header/Header.astro";
-import Footer from "@/components/footer/Footer.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "@/consts";
-import Content from "@/components/body/Content.astro";
-import { IoChevronForward } from "react-icons/io5";
+import { SITE_DESCRIPTION, SITE_TITLE } from "@/consts";
 ---
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    </head>
-    <body
-        class="bg-mainlight text-maindark dark:bg-maindark dark:text-mainlight wrap-break-word leading-6 transition-colors duration-500"
-    >
-        <Header title={SITE_TITLE} />
-        <main class="pt-14">
-            <Content>
-                <section>
-                    <h1 class="text-3xl text-center font-title mt-12 mb-8">
-                        Oops, not found
-                    </h1>
-                    <div class="text-center py-4">
-                        <a
-                            class="inline-flex items-center gap-1 underline underline-offset-2 decoration-indigo-500"
-                            href="/"
-                            >Go to Index <IoChevronForward />
-                        </a>
-                    </div>
-                </section>
-            </Content>
-        </main>
-        <Footer />
-    </body>
+  <head>
+    <BaseHead description={SITE_DESCRIPTION} title={SITE_TITLE} />
+  </head>
+  <body
+    class="bg-mainlight text-maindark dark:bg-maindark dark:text-mainlight wrap-break-word leading-6 transition-colors duration-500"
+  >
+    <Header title={SITE_TITLE} />
+    <main class="pt-14">
+      <Content>
+        <section>
+          <h1 class="text-3xl text-center font-title mt-12 mb-8">
+            Oops, not found
+          </h1>
+          <div class="text-center py-4">
+            <a
+              class="inline-flex items-center gap-1 underline underline-offset-2 decoration-indigo-500"
+              href="/"
+              >Go to Index <IoChevronForward />
+            </a>
+          </div>
+        </section>
+      </Content>
+    </main>
+    <Footer />
+  </body>
 </html>
