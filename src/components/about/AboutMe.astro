@@ -63,13 +63,13 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
 
                 return (
                     <a
+                        class="mb-6 flex items-center gap-3 text-foreground transition-colors hover:text-popover sm:mb-8 sm:gap-4"
                         href={linkedIn.href}
-                        target="_blank"
                         rel="noopener noreferrer"
-                        class="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8 text-foreground hover:text-popover transition-colors"
+                        target="_blank"
                     >
-                        <Icon className="text-3xl sm:text-4xl shrink-0" />
-                        <span class="font-sans text-base sm:text-xl font-medium tracking-tight truncate">
+                        <Icon class="shrink-0 text-3xl sm:text-4xl" />
+                        <span class="truncate font-medium font-sans text-base tracking-tight sm:text-xl">
                             {linkedIn.handle}
                         </span>
                     </a>
@@ -80,12 +80,12 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
   <div class="flex flex-wrap items-center gap-3 sm:gap-5">
     {otherLinks.map(({ href, icon: Icon }) => (
                 <a
+                    class="shrink-0 text-foreground transition-colors hover:text-popover"
                     href={href}
-                    target="_blank"
                     rel="noopener noreferrer"
-                    class="text-foreground hover:text-popover transition-colors shrink-0"
+                    target="_blank"
                 >
-                    <Icon className="text-2xl sm:text-3xl" />
+                    <Icon class="text-2xl sm:text-3xl" />
                 </a>
             ))}
 
@@ -94,3 +94,11 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
     </span>
   </div>
 </div>
+
+<a
+  class="inline-block w-full text-center border border-neutral-700 rounded-lg px-4 py-2 text-sm text-foreground hover:bg-popover transition-colors mt-8"
+  data-astro-prefetch
+  href="/tags"
+>
+  Browse Tags &rarr;
+</a>

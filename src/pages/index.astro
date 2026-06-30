@@ -32,12 +32,12 @@ const hasMorePosts = allPosts.length > 3;
           {hasMorePosts && (
                             <div class="mt-8 text-center">
                                 <a
-                                    href="/blogs/2"
-                                    class="inline-block group py-2 px-4 text-sm font-medium text-foreground hover:text-popover transition-colors duration-300"
+                                    class="group inline-block px-4 py-2 font-medium text-foreground text-sm transition-colors duration-300 hover:text-popover"
                                     data-astro-prefetch="viewport"
+                                    href="/blogs/2"
                                 >
                                     See other posts
-                                    <span class="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-1 group-hover:translate-x-0">
+                                    <span class="ml-1 inline-block translate-x-1 opacity-0 transition-opacity duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                                         →
                                     </span>
                                 </a>

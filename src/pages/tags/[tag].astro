@@ -1,0 +1,81 @@
+---
+import { getCollection } from "astro:content";
+import ArticleList from "@/components/blogs/ArticleList.astro";
+import Content from "@/components/body/Content.astro";
+import Footer from "@/components/footer/Footer.astro";
+import BaseHead from "@/components/header/BaseHead.astro";
+import Header from "@/components/header/Header.astro";
+import { SITE_TITLE } from "@/consts";
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection("blog");
+
+  // Collect all unique tag slugs and their canonical labels
+  const tagMap = new Map<string, string>();
+  for (const post of allPosts) {
+    for (const tag of post.data.tags ?? []) {
+      if (!tag) {
+        continue;
+      }
+      const slug = tag.toLowerCase().replace(/\s+/g, "-");
+      if (!tagMap.has(slug)) {
+        tagMap.set(slug, tag);
+      }
+    }
+  }
+
+  return [...tagMap.entries()].map(([slug, label]) => {
+    const filteredPosts = allPosts
+      .filter((post) =>
+        (post.data.tags ?? []).some(
+          (t) => t.toLowerCase().replace(/\s+/g, "-") === slug
+        )
+      )
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+    return {
+      params: { tag: slug },
+      props: { label, posts: filteredPosts },
+    };
+  });
+}
+
+const { tag } = Astro.params;
+const { label, posts } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      description={`All posts tagged with ${label}`}
+      title={`#${label} — ${SITE_TITLE}`}
+    />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header />
+    <main class="pt-14 flex-1">
+      <Content className="my-auto mt-6">
+        <div class="mb-6">
+          <a
+            class="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+            href="/tags/"
+          >
+            ← All tags
+          </a>
+        </div>
+
+        <h1 class="text-3xl font-bold mb-2">
+          <span class="text-muted-foreground font-normal">#</span>{label}
+        </h1>
+        <p class="text-muted-foreground mb-8">
+          {posts.length}
+          post{posts.length === 1 ? "" : "s"}
+        </p>
+
+        <ArticleList posts={posts} />
+      </Content>
+    </main>
+    <Footer />
+  </body>
+</html>

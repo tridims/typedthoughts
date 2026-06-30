@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import Tag from "@/components/blogs/Tag.astro";
 import Footer from "@/components/footer/Footer.astro";
 import BaseHead from "@/components/header/BaseHead.astro";
 import Header from "@/components/header/Header.astro";
@@ -9,8 +10,15 @@ import FormattedDate from "@/components/utils/FormattedDate.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
-const { title, description, pubDate, updatedDate, heroImage, externalPost } =
-  Astro.props;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  heroImage,
+  externalPost,
+  tags,
+} = Astro.props;
 ---
 
 <html lang="en">
@@ -27,18 +35,18 @@ const { title, description, pubDate, updatedDate, heroImage, externalPost } =
           {heroImage && (
                             <div class="mb-8">
                                 <Image
-                                    class="w-full h-auto rounded-xl border border-border"
-                                    width={1020}
-                                    height={510}
-                                    src={heroImage.image}
                                     alt={"heroImage"}
-                                    transition:name={title}
                                     transition:animate="slide"
+                                    class="h-auto w-full rounded-xl border border-border"
+                                    height={510}
+                                    transition:name={title}
+                                    src={heroImage.image}
+                                    width={1020}
                                 />
                                 {heroImage.source && (
-                                    <p class="text-xs text-muted-foreground mt-2">
+                                    <p class="mt-2 text-muted-foreground text-xs">
                                         Image by{" "}
-                                        <a href={heroImage.source} target="_blank" rel="noopener noreferrer" class="hover:underline">
+                                        <a class="hover:underline" href={heroImage.source} rel="noopener noreferrer" target="_blank">
                                             {heroImage.owner}
                                         </a>
                                     </p>
@@ -59,23 +67,33 @@ const { title, description, pubDate, updatedDate, heroImage, externalPost } =
           <div class="text-sm text-muted-foreground">
             <FormattedDate date={pubDate} />
             {updatedDate && (
-                                <span class="mx-2">&bull;</span>
-                                <span>
-                                    Updated on <FormattedDate
-                                        date={updatedDate}
-                                    />
-                                </span>
+                                <>
+                                    <span class="mx-2">&bull;</span>
+                                    <span>
+                                        {"Updated on "}<FormattedDate
+                                            date={updatedDate}
+                                        />
+                                    </span>
+                                </>
                             )}
           </div>
 
           {externalPost && (
-                            <p class="text-sm text-muted-foreground mt-2">
+                            <p class="mt-2 text-muted-foreground text-sm">
                                 Also available on{" "}
                                 <ExternalLink href={externalPost}>
                                     another platform
                                 </ExternalLink>.
                             </p>
                         )}
+
+          {tags && tags.length > 0 && (
+            <div class="mt-4 flex flex-wrap justify-center gap-2">
+              {tags.map((tag) => (
+                <Tag tag={tag} />
+              ))}
+            </div>
+          )}
         </header>
 
         <hr class="border-border my-8">

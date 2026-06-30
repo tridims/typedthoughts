@@ -8,7 +8,11 @@ import BaseHead from "@/components/header/BaseHead.astro";
 import Header from "@/components/header/Header.astro";
 import { SITE_TITLE } from "@/consts";
 
-export async function getStaticPaths({ paginate }: { paginate: any }) {
+export async function getStaticPaths({
+  paginate,
+}: {
+  paginate: (items: unknown[], options: { pageSize: number }) => unknown[];
+}) {
   const allPosts = await getCollection("blog");
   // Sort posts by publication date (newest first)
   const sortedPosts = allPosts.sort(
@@ -25,7 +29,13 @@ const {
   currentPage,
   lastPage,
 } = page as {
-  data: any[];
+  data: {
+    id: string;
+    slug: string;
+    body: string;
+    collection: string;
+    data: Record<string, unknown>;
+  }[];
   url: {
     current: string;
     prev: string | undefined;

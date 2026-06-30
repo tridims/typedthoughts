@@ -12,7 +12,7 @@
 @config "../../tailwind.config.cjs";
 
 body {
-  font-family: "Karla";
+  font-family: "Karla", sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-wrap: break-word;
   text-rendering: optimizeLegibility;

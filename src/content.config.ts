@@ -22,6 +22,7 @@ const blog = defineCollection({
         })
         .optional(),
       externalPost: z.string().optional(),
+      tags: z.array(z.string()).optional(),
     }),
 });
 

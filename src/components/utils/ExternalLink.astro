@@ -6,6 +6,7 @@ type Props = HTMLAttributes<"a">;
 const { href, class: className, ...props } = Astro.props;
 ---
 
+<!-- biome-ignore lint/a11y/useAnchorContent: content is provided via slot -->
 <a
   class="group relative inline"
   href={href}

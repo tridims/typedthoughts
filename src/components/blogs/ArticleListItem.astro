@@ -2,22 +2,23 @@
 // src/components/ArticleListItem.astro
 import type { CollectionEntry } from "astro:content";
 import { marked } from "marked";
+import Tag from "./Tag.astro";
 
 interface Props {
   post: CollectionEntry<"blog">;
 }
 
 const { post } = Astro.props;
-const { title, pubDate, shorts } = post.data;
+const { title, pubDate, shorts, tags } = post.data;
 
 // A helper to format the date like in the example: YYYY-MM-DD
 const formattedDate = new Date(pubDate).toISOString().split("T")[0];
 const htmlShorts = await marked.parse(shorts);
 ---
 
-<article>
+<article class="py-4">
   <a
-    class="block group py-4"
+    class="block group"
     data-astro-prefetch="viewport"
     href={`/blogs/${post.id}/`}
   >
@@ -38,4 +39,11 @@ const htmlShorts = await marked.parse(shorts);
       set:html={htmlShorts}
     />
   </a>
+  {tags && tags.length > 0 && (
+            <div class="mt-3 flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                    <Tag tag={tag} />
+                ))}
+            </div>
+        )}
 </article>
