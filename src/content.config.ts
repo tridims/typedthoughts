@@ -26,4 +26,18 @@ const blog = defineCollection({
     }),
 });
 
-export const collections = { blog };
+const til = defineCollection({
+  // Load Markdown and MDX files in the `src/content/til/` directory.
+  loader: glob({ base: "./src/content/til", pattern: "**/*.{md,mdx}" }),
+  // Today-I-Learned notes are short and atomic, so the schema is lighter.
+  schema: () =>
+    z.object({
+      title: z.string(),
+      pubDate: z.coerce.date(),
+      updatedDate: z.coerce.date().optional(),
+      description: z.string().optional(),
+      tags: z.array(z.string()).optional(),
+    }),
+});
+
+export const collections = { blog, til };

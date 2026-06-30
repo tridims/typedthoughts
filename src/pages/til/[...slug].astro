@@ -1,0 +1,20 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import Til from "@/layouts/Til.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("til");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: entry,
+  }));
+}
+type Props = CollectionEntry<"til">;
+
+const entry = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Til {...entry.data}>
+  <Content />
+</Til>
