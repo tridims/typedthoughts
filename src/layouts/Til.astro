@@ -5,14 +5,14 @@ import BaseHead from "@/components/header/BaseHead.astro";
 import Header from "@/components/header/Header.astro";
 import FormattedDate from "@/components/utils/FormattedDate.astro";
 
-type Props = CollectionEntry<"til">["data"];
+type Props = CollectionEntry<"til">["data"] & { ogImage?: string };
 
-const { title, description, pubDate, updatedDate, tags } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, ogImage } = Astro.props;
 ---
 
 <html lang="en">
   <head>
-    <BaseHead description={description ?? title} title={title} />
+    <BaseHead description={description ?? title} ogImage={ogImage} title={title} />
   </head>
 
   <body class="bg-background text-foreground">

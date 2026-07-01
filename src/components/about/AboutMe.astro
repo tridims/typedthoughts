@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import { Rss } from "@lucide/astro";
 import { FaGithub, FaLinkedin, FaMedium } from "react-icons/fa";
 
 import socialImage from "../../assets/cat.jpeg";
@@ -125,4 +126,12 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
   href="/til"
 >
   Today I Learned &rarr;
+</a>
+
+<a
+  class="inline-flex items-center justify-center gap-2 w-full text-center border border-neutral-700 rounded-lg px-4 py-2 text-sm text-foreground hover:bg-popover transition-colors mt-4"
+  href="/rss.xml"
+>
+  <Rss class="h-4 w-4" />
+  Subscribe via RSS
 </a>

@@ -11,12 +11,20 @@ import { SITE_TITLE } from "@/consts";
 interface Props {
   description: string;
   image?: ImageMetadata;
+  /** Absolute path to a pre-generated OG image, e.g. `/og/blog/my-post.png`. Takes precedence over `image`. */
+  ogImage?: string;
   title: string;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = FallbackImage } = Astro.props;
+const { title, description, image = FallbackImage, ogImage } = Astro.props;
+
+// Prefer a build-time generated OG image when available, otherwise fall
+// back to the provided (or default) image asset.
+const ogImageURL = ogImage
+  ? new URL(ogImage, Astro.site)
+  : new URL(image.src, Astro.url);
 ---
 
 <!-- Global Metadata -->
@@ -29,6 +37,12 @@ const { title, description, image = FallbackImage } = Astro.props;
   href={new URL("rss.xml", Astro.site)}
   rel="alternate"
   title={SITE_TITLE}
+  type="application/rss+xml"
+>
+<link
+  href={new URL("til/rss.xml", Astro.site)}
+  rel="alternate"
+  title={`${SITE_TITLE} — TIL`}
   type="application/rss+xml"
 >
 <meta content={Astro.generator} name="generator">
@@ -53,14 +67,14 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta content={Astro.url} property="og:url">
 <meta content={title} property="og:title">
 <meta content={description} property="og:description">
-<meta content={new URL(image.src, Astro.url)} property="og:image">
+<meta content={ogImageURL} property="og:image">
 
 <!-- Twitter -->
 <meta content="summary_large_image" property="twitter:card">
 <meta content={Astro.url} property="twitter:url">
 <meta content={title} property="twitter:title">
 <meta content={description} property="twitter:description">
-<meta content={new URL(image.src, Astro.url)} property="twitter:image">
+<meta content={ogImageURL} property="twitter:image">
 
 <ClientRouter />
 

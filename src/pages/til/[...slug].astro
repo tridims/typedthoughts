@@ -13,8 +13,9 @@ type Props = CollectionEntry<"til">;
 
 const entry = Astro.props;
 const { Content } = await render(entry);
+const ogImage = `/og/til/${entry.id}.png`;
 ---
 
-<Til {...entry.data}>
+<Til {...entry.data} ogImage={ogImage}>
   <Content />
 </Til>

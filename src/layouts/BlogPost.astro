@@ -8,7 +8,10 @@ import Header from "@/components/header/Header.astro";
 import ExternalLink from "@/components/utils/ExternalLink.astro";
 import FormattedDate from "@/components/utils/FormattedDate.astro";
 
-type Props = CollectionEntry<"blog">["data"] & { readingTime?: string };
+type Props = CollectionEntry<"blog">["data"] & {
+  readingTime?: string;
+  ogImage?: string;
+};
 
 const {
   title,
@@ -19,12 +22,13 @@ const {
   externalPost,
   tags,
   readingTime,
+  ogImage,
 } = Astro.props;
 ---
 
 <html lang="en">
   <head>
-    <BaseHead description={description} title={title} />
+    <BaseHead description={description} ogImage={ogImage} title={title} />
   </head>
 
   <body class="bg-background text-foreground">

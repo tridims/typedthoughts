@@ -6,6 +6,7 @@ import BaseHead from "@/components/header/BaseHead.astro";
 import Header from "@/components/header/Header.astro";
 import TilListItem from "@/components/til/TilListItem.astro";
 import { SITE_TITLE } from "@/consts";
+import { Rss } from "@lucide/astro";
 
 const entries = (await getCollection("til")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -41,6 +42,14 @@ const entries = (await getCollection("til")).sort(
             picked up while building, breaking, and tinkering. Lower stakes than
             a full blog post, but worth remembering.
           </p>
+          <a
+            class="group mt-4 inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-popover hover:text-popover"
+            href="/til/rss.xml"
+            title="Subscribe to the TIL RSS feed"
+          >
+            <Rss class="h-3.5 w-3.5" />
+            <span>Subscribe to TIL</span>
+          </a>
         </header>
 
         {entries.length === 0 ? (
