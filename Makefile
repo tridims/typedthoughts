@@ -18,6 +18,7 @@ dev:
 	bun run dev
 
 build:
+	bun install
 	bun run build
 
 preview:
