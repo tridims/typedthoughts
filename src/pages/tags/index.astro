@@ -1,0 +1,64 @@
+---
+import { getCollection } from "astro:content";
+import Tag from "@/components/blogs/Tag.astro";
+import Content from "@/components/body/Content.astro";
+import Footer from "@/components/footer/Footer.astro";
+import BaseHead from "@/components/header/BaseHead.astro";
+import Header from "@/components/header/Header.astro";
+import { SITE_TITLE } from "@/consts";
+
+const allPosts = await getCollection("blog");
+
+// Build a map of tag -> post count, slugifying tag names for URLs
+const tagMap = new Map<string, { label: string; count: number }>();
+
+for (const post of allPosts) {
+  for (const tag of post.data.tags ?? []) {
+    if (!tag) {
+      continue;
+    }
+    const slug = tag.toLowerCase().replace(/\s+/g, "-");
+    const existing = tagMap.get(slug);
+    if (existing) {
+      existing.count++;
+    } else {
+      tagMap.set(slug, { label: tag, count: 1 });
+    }
+  }
+}
+
+// Sort alphabetically by label
+const tags = [...tagMap.entries()].sort((a, b) =>
+  a[1].label.localeCompare(b[1].label)
+);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      description="Browse all blog post tags"
+      title={`Tags — ${SITE_TITLE}`}
+    />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header />
+    <main class="pt-14 flex-1">
+      <Content className="my-auto mt-6">
+        <h1 class="text-3xl font-bold mb-2">Tags</h1>
+        <p class="text-muted-foreground mb-8">Browse all posts by topic.</p>
+
+        {tags.length === 0 ? (
+                        <p class="text-muted-foreground">No tags yet.</p>
+                    ) : (
+                        <div class="flex flex-wrap gap-3">
+                            {tags.map(([, { label, count }]) => (
+                                <Tag count={count} tag={label} />
+                            ))}
+                        </div>
+                    )}
+      </Content>
+    </main>
+    <Footer />
+  </body>
+</html>

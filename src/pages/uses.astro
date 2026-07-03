@@ -1,0 +1,260 @@
+---
+import Content from "@/components/body/Content.astro";
+import Footer from "@/components/footer/Footer.astro";
+import BaseHead from "@/components/header/BaseHead.astro";
+import Header from "@/components/header/Header.astro";
+import ExternalLink from "@/components/utils/ExternalLink.astro";
+import { SITE_TITLE } from "@/consts";
+import {
+  FaCloud,
+  FaCode,
+  FaDesktop,
+  FaServer,
+  FaTerminal,
+} from "react-icons/fa";
+
+type UsesItem = {
+  name: string;
+  description: string;
+  href?: string;
+};
+
+type UsesSection = {
+  title: string;
+  blurb: string;
+  icon: typeof FaDesktop;
+  items: UsesItem[];
+};
+
+const sections: UsesSection[] = [
+  {
+    title: "Hardware",
+    blurb: "The machines I type on every day.",
+    icon: FaDesktop,
+    items: [
+      {
+        name: "Lenovo IdeaPad Gaming 3",
+        description:
+          "My personal workhorse — handles coding, gaming, and homelab experiments alike.",
+      },
+      {
+        name: "HP ProBook 450 G10",
+        description:
+          "The work laptop for day-to-day engineering tasks.",
+      },
+      {
+        name: "Skyworth Monitor",
+        description:
+          "An external display for extra screen real estate at the desk.",
+      },
+      {
+        name: "Press Play Keyboard",
+        description:
+          "A mechanical keyboard that makes the typing feel just right.",
+      },
+    ],
+  },
+  {
+    title: "Daily Software",
+    blurb: "Apps I keep open all day.",
+    icon: FaDesktop,
+    items: [
+      {
+        name: "Arch Linux",
+        description:
+          "My main operating system — minimal, bleeding-edge, and bent exactly to my workflow.",
+        href: "https://archlinux.org",
+      },
+      {
+        name: "Windows",
+        description:
+          "Kept around for the times a tool or game only speaks Windows.",
+      },
+      {
+        name: "Vivaldi",
+        description:
+          "My primary browser — endlessly customizable with tab stacks and panels.",
+        href: "https://vivaldi.com",
+      },
+      {
+        name: "LibreWolf",
+        description:
+          "A privacy-hardened Firefox fork for browsing that minds its own business.",
+        href: "https://librewolf.net",
+      },
+      {
+        name: "Obsidian",
+        description:
+          "My second brain — Markdown notes linked together in one local vault.",
+        href: "https://obsidian.md",
+      },
+    ],
+  },
+  {
+    title: "Dev Tools",
+    blurb: "Where the actual building happens.",
+    icon: FaCode,
+    items: [
+      {
+        name: "VS Code",
+        description:
+          "My go-to editor when I want a full-featured IDE experience.",
+        href: "https://code.visualstudio.com",
+      },
+      {
+        name: "Neovim",
+        description:
+          "Terminal-first editing for when I want to stay on the keyboard and move fast.",
+        href: "https://neovim.io",
+      },
+      {
+        name: "WezTerm",
+        description:
+          "A fast, GPU-accelerated terminal that I configure entirely in Lua.",
+        href: "https://wezterm.org",
+      },
+      {
+        name: "Languages",
+        description:
+          "Python, Go, Rust, and TypeScript — the languages I reach for most.",
+      },
+      {
+        name: "Containers",
+        description:
+          "Docker and Podman for reproducible, isolated local environments.",
+        href: "https://podman.io",
+      },
+      {
+        name: "Version Control",
+        description: "Git, always — with a soft spot for a clean commit history.",
+        href: "https://git-scm.com",
+      },
+    ],
+  },
+  {
+    title: "Homelab",
+    blurb: "My personal playground for breaking and learning things.",
+    icon: FaServer,
+    items: [
+      {
+        name: "Servers",
+        description:
+          "Ubuntu Server and RHEL running my VMs and self-hosted services.",
+      },
+      {
+        name: "Orchestration",
+        description:
+          "Terraform to provision and keep the lab declarative and repeatable.",
+        href: "https://www.terraform.io",
+      },
+      {
+        name: "Monitoring",
+        description:
+          "Grafana for dashboards, backed by VictoriaMetrics for time-series storage.",
+        href: "https://victoriametrics.com",
+      },
+    ],
+  },
+  {
+    title: "Cloud & Infra",
+    blurb: "The tools I reach for when shipping to production.",
+    icon: FaCloud,
+    items: [
+      {
+        name: "Cloud Providers",
+        description:
+          "GCP, AWS, and Tencent Cloud, depending on what the project needs.",
+      },
+      {
+        name: "Infrastructure as Code",
+        description:
+          "Terraform for provisioning and Ansible for configuration management.",
+        href: "https://www.ansible.com",
+      },
+      {
+        name: "CI/CD",
+        description:
+          "GitHub Actions, GitLab CI, and Jenkins to automate builds and deploys.",
+      },
+    ],
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      description="The hardware, software, and tools I use every day."
+      title={`Uses — ${SITE_TITLE}`}
+    />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header title="Uses" />
+    <main class="pt-14 flex-1" transition:animate="fade">
+      <Content className="my-auto mt-6">
+        <div
+          class="bg-orange-300 dark:bg-amber-600 bg-opacity-40 backdrop-blur-2xl text-center py-3 rounded-lg mb-10 mt-6"
+        >
+          <div class="font-title font-bold drop-shadow-lg shadow-black">
+            <FaTerminal className="inline mr-2 mb-1" />
+            The gear and tools behind the work
+          </div>
+        </div>
+
+        <header class="mb-12">
+          <h1 class="font-title text-4xl font-bold mb-3 text-primary-background">
+            Uses
+          </h1>
+          <p class="text-muted-foreground leading-relaxed">
+            A living list of the hardware, software, and tools I rely on to
+            build, ship, and tinker. Inspired by
+            <ExternalLink href="https://uses.tech">uses.tech</ExternalLink>.
+            This evolves as my setup does.
+          </p>
+        </header>
+
+        <div class="flex flex-col gap-12">
+          {
+            sections.map(({ title, blurb, icon: Icon, items }) => (
+              <section>
+                <div class="flex items-center gap-3 mb-1">
+                  <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-neutral-700 text-popover">
+                    <Icon className="text-lg" />
+                  </span>
+                  <h2 class="font-title text-2xl font-bold">{title}</h2>
+                </div>
+                <p class="text-sm text-muted-foreground mb-5 ml-12">{blurb}</p>
+
+                <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {items.map(({ name, description, href }) => (
+                    <li class="group rounded-xl border border-neutral-700 p-4 transition-colors duration-200 hover:border-popover hover:bg-popover/5">
+                      <div class="font-semibold text-foreground mb-1 transition-colors group-hover:text-popover">
+                        {href ? (
+                          <ExternalLink href={href}>{name}</ExternalLink>
+                        ) : (
+                          name
+                        )}
+                      </div>
+                      <p class="text-sm text-muted-foreground leading-relaxed">
+                        {description}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          }
+        </div>
+
+        <p class="text-xs text-muted-foreground/70 mt-14 mb-4 italic">
+          Last updated {new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+          })}.
+        </p>
+      </Content>
+      <Footer />
+    </main>
+  </body>
+</html>

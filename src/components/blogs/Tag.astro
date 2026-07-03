@@ -1,0 +1,21 @@
+---
+interface Props {
+  count?: number;
+  tag: string;
+}
+
+const { tag, count } = Astro.props;
+const slug = tag.toLowerCase().replace(/\s+/g, "-");
+---
+
+<a
+  class="group inline-flex items-center gap-1.5 rounded-md border border-border bg-secondary/30 px-2.5 py-1 text-xs font-medium leading-none text-muted-foreground transition-colors duration-200 hover:border-popover hover:bg-popover/10 hover:text-popover"
+  href={`/tags/${slug}/`}
+>
+  <span class="leading-none">#{tag}</span>
+  {count !== undefined && (
+            <span class="rounded bg-border/70 px-1.5 py-0.5 text-[10px] text-muted-foreground/80 tabular-nums leading-none transition-colors group-hover:bg-popover/20 group-hover:text-popover">
+                {count}
+            </span>
+        )}
+</a>

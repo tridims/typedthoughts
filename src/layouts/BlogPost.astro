@@ -1,98 +1,117 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-
-import BaseHead from "@/components/header/BaseHead.astro";
+import Tag from "@/components/blogs/Tag.astro";
 import Footer from "@/components/footer/Footer.astro";
+import BaseHead from "@/components/header/BaseHead.astro";
 import Header from "@/components/header/Header.astro";
-
-import FormattedDate from "@/components/utils/FormattedDate.astro";
 import ExternalLink from "@/components/utils/ExternalLink.astro";
+import FormattedDate from "@/components/utils/FormattedDate.astro";
 
-type Props = CollectionEntry<"blog">["data"];
+type Props = CollectionEntry<"blog">["data"] & {
+  readingTime?: string;
+  ogImage?: string;
+};
 
-const { title, description, pubDate, updatedDate, heroImage, externalPost } =
-    Astro.props;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  heroImage,
+  externalPost,
+  tags,
+  readingTime,
+  ogImage,
+} = Astro.props;
 ---
 
 <html lang="en">
-    <head>
-        <BaseHead title={title} description={description} />
-    </head>
+  <head>
+    <BaseHead description={description} ogImage={ogImage} title={title} />
+  </head>
 
-    <body class="bg-background text-foreground">
-        <Header />
-        <main class="pt-20">
-            <article
-                class="max-w-3xl mx-auto px-6 py-12"
-            >
-                <!-- Post Header: Contains metadata -->
-                <header class="mb-8 text-center">
-                    {
-                        heroImage && (
+  <body class="bg-background text-foreground">
+    <Header />
+    <main class="pt-20">
+      <article class="max-w-3xl mx-auto px-6 py-12">
+        <!-- Post Header: Contains metadata -->
+        <header class="mb-8 text-center">
+          {heroImage && (
                             <div class="mb-8">
                                 <Image
-                                    class="w-full h-auto rounded-xl border border-border"
-                                    width={1020}
-                                    height={510}
-                                    src={heroImage.image}
                                     alt={"heroImage"}
-                                    transition:name={title}
                                     transition:animate="slide"
+                                    class="h-auto w-full rounded-xl border border-border"
+                                    height={510}
+                                    transition:name={title}
+                                    src={heroImage.image}
+                                    width={1020}
                                 />
                                 {heroImage.source && (
-                                    <p class="text-xs text-muted-foreground mt-2">
+                                    <p class="mt-2 text-muted-foreground text-xs">
                                         Image by{" "}
-                                        <a href={heroImage.source} target="_blank" rel="noopener noreferrer" class="hover:underline">
+                                        <a class="hover:underline" href={heroImage.source} rel="noopener noreferrer" target="_blank">
                                             {heroImage.owner}
                                         </a>
                                     </p>
                                 )}
                             </div>
-                        )
-                    }
+                        )}
 
-                    <h1
-                        class="text-4xl md:text-5xl font-extrabold tracking-tight text-balance mb-4"
-                    >
-                        {title}
-                    </h1>
+          <h1
+            class="text-4xl md:text-5xl font-extrabold tracking-tight text-balance mb-4"
+          >
+            {title}
+          </h1>
 
-                    <p class="text-lg text-muted-foreground mb-4">
-                        {description}
-                    </p>
+          <p class="text-lg text-muted-foreground mb-4">
+            {description}
+          </p>
 
-                    <div class="text-sm text-muted-foreground">
-                        <FormattedDate date={pubDate} />
-                        {
-                            updatedDate && (
-                                <span class="mx-2">&bull;</span>
-                                <span>
-                                    Updated on <FormattedDate
-                                        date={updatedDate}
-                                    />
-                                </span>
-                            )
-                        }
-                    </div>
+          <div class="text-sm text-muted-foreground">
+            <FormattedDate date={pubDate} />
+            {readingTime && (
+                                <>
+                                    <span class="mx-2">&bull;</span>
+                                    <span>{readingTime}</span>
+                                </>
+                            )}
+            {updatedDate && (
+                                <>
+                                    <span class="mx-2">&bull;</span>
+                                    <span>
+                                        {"Updated on "}<FormattedDate
+                                            date={updatedDate}
+                                        />
+                                    </span>
+                                </>
+                            )}
+          </div>
 
-                    {
-                        externalPost && (
-                            <p class="text-sm text-muted-foreground mt-2">
+          {externalPost && (
+                            <p class="mt-2 text-muted-foreground text-sm">
                                 Also available on{" "}
                                 <ExternalLink href={externalPost}>
                                     another platform
                                 </ExternalLink>.
                             </p>
-                        )
-                    }
-                </header>
+                        )}
 
-                <hr class="border-border my-8" />
+          {tags && tags.length > 0 && (
+            <div class="mt-4 flex flex-wrap justify-center gap-2">
+              {tags.map((tag) => (
+                <Tag tag={tag} />
+              ))}
+            </div>
+          )}
+        </header>
 
-                <!-- Post Content: Styled with Tailwind Typography -->
-                <div
-                    class="prose prose-lg dark:prose-invert max-w-none 
+        <hr class="border-border my-8">
+
+        <!-- Post Content: Styled with Tailwind Typography -->
+        <div
+          class="prose prose-lg dark:prose-invert max-w-none 
                         prose-headings:text-foreground 
                         prose-p:text-foreground
                         prose-a:text-orange-500 prose-a:no-underline hover:prose-a:underline
@@ -101,11 +120,11 @@ const { title, description, pubDate, updatedDate, heroImage, externalPost } =
                         prose-li:marker:text-orange-500
                         prose-code:rounded-md prose-code:px-1.5 prose-code:py-1 prose-code:font-mono prose-code:text-sm
                         "
-                >
-                    <slot />
-                </div>
-            </article>
-        </main>
-        <Footer />
-    </body>
+        >
+          <slot />
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
 </html>

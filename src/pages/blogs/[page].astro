@@ -1,72 +1,80 @@
 ---
-import BaseHead from "@/components/header/BaseHead.astro";
-import Header from "@/components/header/Header.astro";
-import Footer from "@/components/footer/Footer.astro";
-import { SITE_TITLE } from "@/consts";
 import { getCollection } from "astro:content";
 import ArticleList from "@/components/blogs/ArticleList.astro";
 import Pagination from "@/components/blogs/Pagination.astro";
 import Content from "@/components/body/Content.astro";
+import Footer from "@/components/footer/Footer.astro";
+import BaseHead from "@/components/header/BaseHead.astro";
+import Header from "@/components/header/Header.astro";
+import { SITE_TITLE } from "@/consts";
 
-export async function getStaticPaths({ paginate }: { paginate: any }) {
-    const allPosts = await getCollection("blog");
-    // Sort posts by publication date (newest first)
-    const sortedPosts = allPosts.sort(
-        (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-    );
-    // Return paginated results with 3 posts per page
-    return paginate(sortedPosts, { pageSize: 3 });
+export async function getStaticPaths({
+  paginate,
+}: {
+  paginate: (items: unknown[], options: { pageSize: number }) => unknown[];
+}) {
+  const allPosts = await getCollection("blog");
+  // Sort posts by publication date (newest first)
+  const sortedPosts = allPosts.sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  );
+  // Return paginated results with 3 posts per page
+  return paginate(sortedPosts, { pageSize: 3 });
 }
 
 const { page } = Astro.props;
 const {
-    data: posts,
-    url,
-    currentPage,
-    lastPage,
+  data: posts,
+  url,
+  currentPage,
+  lastPage,
 } = page as {
-    data: any[];
-    url: {
-        current: string;
-        prev: string | undefined;
-        next: string | undefined;
-        first: string | undefined;
-        last: string | undefined;
-    };
-    currentPage: number;
-    lastPage: number;
+  data: {
+    id: string;
+    slug: string;
+    body: string;
+    collection: string;
+    data: Record<string, unknown>;
+  }[];
+  url: {
+    current: string;
+    prev: string | undefined;
+    next: string | undefined;
+    first: string | undefined;
+    last: string | undefined;
+  };
+  currentPage: number;
+  lastPage: number;
 };
 ---
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <BaseHead
-            title={`${SITE_TITLE} - Blog Page ${currentPage}`}
-            description="Blog posts listing"
-        />
-    </head>
-    <body class="min-h-screen flex flex-col">
-        <Header title={SITE_TITLE} />
-        <main class="pt-14 flex-1" transition:animate="fade">
-            <Content className="my-auto mt-6 flex flex-row">
-                <div class="w-full">
-                    <h1 class="text-3xl font-bold mb-6">
-                        Blogs Page {currentPage}
-                    </h1>
-                    <ArticleList posts={posts} />
+  <head>
+    <BaseHead
+      description="Blog posts listing"
+      title={`${SITE_TITLE} - Blog Page ${currentPage}`}
+    />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header title={SITE_TITLE} />
+    <main class="pt-14 flex-1" transition:animate="fade">
+      <Content className="my-auto mt-6 flex flex-row">
+        <div class="w-full">
+          <h1 class="text-3xl font-bold mb-6">Blogs Page {currentPage}</h1>
+          <ArticleList posts={posts} />
 
-                    <Pagination
-                        currentPage={currentPage}
-                        lastPage={lastPage}
-                        prevUrl={url.prev}
-                        nextUrl={url.next}
-                        firstUrl={url.first}
-                        lastUrl={url.last}
-                    />
-                </div>
-            </Content>
-            <Footer />
-        </main>
-    </body>
+          <Pagination
+            currentPage={currentPage}
+            firstUrl={url.first}
+            lastPage={lastPage}
+            lastUrl={url.last}
+            nextUrl={url.next}
+            prevUrl={url.prev}
+          />
+        </div>
+      </Content>
+      <Footer />
+    </main>
+  </body>
 </html>

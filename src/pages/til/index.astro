@@ -1,0 +1,68 @@
+---
+import { getCollection } from "astro:content";
+import Content from "@/components/body/Content.astro";
+import Footer from "@/components/footer/Footer.astro";
+import BaseHead from "@/components/header/BaseHead.astro";
+import Header from "@/components/header/Header.astro";
+import TilListItem from "@/components/til/TilListItem.astro";
+import { SITE_TITLE } from "@/consts";
+import { Rss } from "@lucide/astro";
+
+const entries = (await getCollection("til")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      description="Short, atomic notes on things I learned recently."
+      title={`TIL — ${SITE_TITLE}`}
+    />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header title="TIL" />
+    <main class="pt-14 flex-1" transition:animate="fade">
+      <Content className="my-auto mt-6">
+        <div
+          class="bg-orange-300 dark:bg-amber-600 bg-opacity-40 backdrop-blur-2xl text-center py-3 rounded-lg mb-10 mt-6"
+        >
+          <div class="font-title font-bold drop-shadow-lg shadow-black">
+            💡 Small things, written down
+          </div>
+        </div>
+
+        <header class="mb-10">
+          <h1 class="font-title text-4xl font-bold mb-3 text-primary-background">
+            Today I Learned
+          </h1>
+          <p class="text-muted-foreground leading-relaxed">
+            A running collection of short, atomic notes — bits of knowledge I
+            picked up while building, breaking, and tinkering. Lower stakes than
+            a full blog post, but worth remembering.
+          </p>
+          <a
+            class="group mt-4 inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-popover hover:text-popover"
+            href="/til/rss.xml"
+            title="Subscribe to the TIL RSS feed"
+          >
+            <Rss class="h-3.5 w-3.5" />
+            <span>Subscribe to TIL</span>
+          </a>
+        </header>
+
+        {entries.length === 0 ? (
+          <p class="text-muted-foreground">No TIL entries yet. Check back soon.</p>
+        ) : (
+          <section>
+            {entries.map((entry) => (
+              <TilListItem entry={entry} />
+            ))}
+          </section>
+        )}
+      </Content>
+      <Footer />
+    </main>
+  </body>
+</html>

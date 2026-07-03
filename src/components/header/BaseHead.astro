@@ -3,86 +3,97 @@
 // all pages through the use of the <BaseHead /> component.
 import "@/styles/global.css";
 
-import { SITE_TITLE } from "@/consts";
-import FallbackImage from "@/assets/blog-placeholder-1.jpg";
-import type { ImageMetadata } from "astro";
 import { ClientRouter } from "astro:transitions";
+import type { ImageMetadata } from "astro";
+import FallbackImage from "@/assets/blog-placeholder-1.jpg";
+import { SITE_TITLE } from "@/consts";
 
 interface Props {
-    title: string;
-    description: string;
-    image?: ImageMetadata;
+  description: string;
+  image?: ImageMetadata;
+  /** Absolute path to a pre-generated OG image, e.g. `/og/blog/my-post.png`. Takes precedence over `image`. */
+  ogImage?: string;
+  title: string;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = FallbackImage } = Astro.props;
+const { title, description, image = FallbackImage, ogImage } = Astro.props;
+
+// Prefer a build-time generated OG image when available, otherwise fall
+// back to the provided (or default) image asset.
+const ogImageURL = ogImage
+  ? new URL(ogImage, Astro.site)
+  : new URL(image.src, Astro.url);
 ---
 
 <!-- Global Metadata -->
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta charset="utf-8">
+<meta content="width=device-width,initial-scale=1" name="viewport">
+<link href="/favicon.svg" rel="icon" type="image/svg+xml">
 <!-- <link rel="icon" type="image/x-icon" href="/favicon.ico" /> -->
-<link rel="sitemap" href="/sitemap-index.xml" />
+<link href="/sitemap-index.xml" rel="sitemap">
 <link
-    rel="alternate"
-    type="application/rss+xml"
-    title={SITE_TITLE}
-    href={new URL("rss.xml", Astro.site)}
-/>
-<meta name="generator" content={Astro.generator} />
+  href={new URL("rss.xml", Astro.site)}
+  rel="alternate"
+  title={SITE_TITLE}
+  type="application/rss+xml"
+>
+<link
+  href={new URL("til/rss.xml", Astro.site)}
+  rel="alternate"
+  title={`${SITE_TITLE} — TIL`}
+  type="application/rss+xml"
+>
+<meta content={Astro.generator} name="generator">
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
 <link
-    href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Rubik:ital,wght@0,300..900;1,300..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
-    rel="stylesheet"
-/>
+  href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Rubik:ital,wght@0,300..900;1,300..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+  rel="stylesheet"
+>
 
 <!-- Canonical URL -->
-<link rel="canonical" href={canonicalURL} />
+<link href={canonicalURL} rel="canonical">
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
-<meta name="title" content={title} />
-<meta name="description" content={description} />
+<meta content={title} name="title">
+<meta content={description} name="description">
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image.src, Astro.url)} />
+<meta content="website" property="og:type">
+<meta content={Astro.url} property="og:url">
+<meta content={title} property="og:title">
+<meta content={description} property="og:description">
+<meta content={ogImageURL} property="og:image">
 
 <!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+<meta content="summary_large_image" property="twitter:card">
+<meta content={Astro.url} property="twitter:url">
+<meta content={title} property="twitter:title">
+<meta content={description} property="twitter:description">
+<meta content={ogImageURL} property="twitter:image">
 
 <ClientRouter />
 
 <script is:inline>
-    const theme = (() => {
-        if (
-            typeof localStorage !== "undefined" &&
-            localStorage.getItem("theme")
-        ) {
-            return localStorage.getItem("theme");
-        }
-
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            return "dark";
-        }
-
-        return "light";
-    })();
-
-    if (theme === "light") {
-        document.documentElement.classList.remove("dark");
-    } else {
-        document.documentElement.classList.add("dark");
+  const theme = (() => {
+    if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+      return localStorage.getItem("theme");
     }
+
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+
+    return "light";
+  })();
+
+  if (theme === "light") {
+    document.documentElement.classList.remove("dark");
+  } else {
+    document.documentElement.classList.add("dark");
+  }
 </script>

@@ -1,131 +1,117 @@
 ---
 // Pagination.astro
 interface Props {
-    currentPage: number;
-    lastPage: number;
-    prevUrl?: string;
-    nextUrl?: string;
-    firstUrl?: string;
-    lastUrl?: string;
+  currentPage: number;
+  firstUrl?: string;
+  lastPage: number;
+  lastUrl?: string;
+  nextUrl?: string;
+  prevUrl?: string;
 }
 
 const { currentPage, lastPage, prevUrl, nextUrl, firstUrl, lastUrl } =
-    Astro.props;
+  Astro.props;
 ---
 
 <!-- Pagination Controls -->
 <nav class="mt-8 flex justify-center items-center space-x-4">
-    {
-        prevUrl ? (
+  {prevUrl ? (
             <a
+                class="group inline-block px-4 py-2 font-medium text-foreground text-sm transition-colors duration-300 hover:text-popover"
+                data-astro-prefetch="viewport"
                 href={prevUrl}
-                class="inline-block group py-2 px-4 text-sm font-medium text-foreground hover:text-popover transition-colors duration-300"
-                data-astro-prefetch="viewport"
             >
                 ← Previous
             </a>
         ) : (
-            <span class="inline-block py-2 px-4 text-sm font-medium text-muted-foreground cursor-not-allowed">
+            <span class="inline-block cursor-not-allowed px-4 py-2 font-medium text-muted-foreground text-sm">
                 ← Previous
             </span>
-        )
-    }
+        )}
 
-    <span class="text-sm text-muted-foreground">
-        Page {currentPage} of {lastPage}
-    </span>
+  <span class="text-sm text-muted-foreground">
+    Page {currentPage} of {lastPage}
+  </span>
 
-    {
-        nextUrl ? (
+  {nextUrl ? (
             <a
-                href={nextUrl}
-                class="inline-block group py-2 px-4 text-sm font-medium text-foreground hover:text-popover transition-colors duration-300"
+                class="group inline-block px-4 py-2 font-medium text-foreground text-sm transition-colors duration-300 hover:text-popover"
                 data-astro-prefetch="viewport"
+                href={nextUrl}
             >
                 Next →
             </a>
         ) : (
-            <span class="inline-block py-2 px-4 text-sm font-medium text-muted-foreground cursor-not-allowed">
+            <span class="inline-block cursor-not-allowed px-4 py-2 font-medium text-muted-foreground text-sm">
                 Next →
             </span>
-        )
-    }
+        )}
 </nav>
 
 <!-- Additional pagination links for easier navigation -->
 <div class="mt-4 flex justify-center">
-    <div class="flex space-x-2">
-        {/* Show first page if we're beyond page 1 */}
-        {
-            currentPage > 1 && firstUrl ? (
+  <div class="flex space-x-2">
+    <!-- Show first page if we're beyond page 1 -->
+    {currentPage > 1 && firstUrl ? (
                 <>
                     <a
-                        href={firstUrl}
-                        class="px-3 py-1 text-sm hover:text-popover transition-colors duration-300"
+                        class="px-3 py-1 text-sm transition-colors duration-300 hover:text-popover"
                         data-astro-prefetch="viewport"
+                        href={firstUrl}
                     >
                         1
                     </a>
                     {currentPage > 3 ? (
-                        <span class="px-2 py-1 text-sm text-muted-foreground">
+                        <span class="px-2 py-1 text-muted-foreground text-sm">
                             ...
                         </span>
                     ) : null}
                 </>
-            ) : null
-        }
+            ) : null}
 
-        {/* Show previous page if it's not page 1 */}
-        {
-            prevUrl && currentPage > 2 ? (
+    <!-- Show previous page if it's not page 1 -->
+    {prevUrl && currentPage > 2 ? (
                 <a
-                    href={prevUrl}
-                    class="px-3 py-1 text-sm hover:text-popover transition-colors duration-300"
+                    class="px-3 py-1 text-sm transition-colors duration-300 hover:text-popover"
                     data-astro-prefetch="viewport"
+                    href={prevUrl}
                 >
                     {currentPage - 1}
                 </a>
-            ) : null
-        }
+            ) : null}
 
-        {/* Current page */}
-        <span class="px-3 py-1 text-sm font-medium text-popover">
-            {currentPage}
-        </span>
+    <!-- Current page -->
+    <span class="px-3 py-1 text-sm font-medium text-popover">
+      {currentPage}
+    </span>
 
-        {
-            /* Show next page if it's not the last page and not adjacent to last */
-        }
-        {
-            nextUrl && currentPage < lastPage - 1 ? (
+    <!-- Show next page if it's not the last page and not adjacent to last -->
+    {nextUrl && currentPage < lastPage - 1 ? (
                 <a
-                    href={nextUrl}
-                    class="px-3 py-1 text-sm hover:text-popover transition-colors duration-300"
+                    class="px-3 py-1 text-sm transition-colors duration-300 hover:text-popover"
                     data-astro-prefetch="viewport"
+                    href={nextUrl}
                 >
                     {currentPage + 1}
                 </a>
-            ) : null
-        }
+            ) : null}
 
-        {/* Show last page if we're before it */}
-        {
-            currentPage < lastPage && lastUrl ? (
+    <!-- Show last page if we're before it -->
+    {currentPage < lastPage && lastUrl ? (
                 <>
                     {currentPage < lastPage - 2 ? (
-                        <span class="px-2 py-1 text-sm text-muted-foreground">
+                        <span class="px-2 py-1 text-muted-foreground text-sm">
                             ...
                         </span>
                     ) : null}
                     <a
-                        href={lastUrl}
-                        class="px-3 py-1 text-sm hover:text-popover transition-colors duration-300"
+                        class="px-3 py-1 text-sm transition-colors duration-300 hover:text-popover"
                         data-astro-prefetch="viewport"
+                        href={lastUrl}
                     >
                         {lastPage}
                     </a>
                 </>
-            ) : null
-        }
-    </div>
+            ) : null}
+  </div>
 </div>

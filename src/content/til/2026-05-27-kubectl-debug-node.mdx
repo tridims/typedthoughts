@@ -1,0 +1,18 @@
+---
+title: "Debugging a node with kubectl debug"
+pubDate: "2026-05-27"
+description: "kubectl debug can drop you into a privileged pod on a specific node without SSH access."
+tags: ["Kubernetes", "Debugging"]
+---
+
+When a node misbehaves and SSH is locked down, `kubectl debug` can attach a
+throwaway container straight onto the host's namespaces.
+
+```bash
+kubectl debug node/my-node-1 -it --image=busybox
+```
+
+This schedules a pod on `my-node-1` that shares the host's PID, network, and IPC
+namespaces, mounting the root filesystem under `/host`. From there I can inspect
+`/host/var/log`, check running processes, or poke at the kubelet — then delete
+the pod and leave no trace on the node itself.

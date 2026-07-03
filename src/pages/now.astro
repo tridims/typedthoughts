@@ -1,0 +1,147 @@
+---
+import Content from "@/components/body/Content.astro";
+import Footer from "@/components/footer/Footer.astro";
+import BaseHead from "@/components/header/BaseHead.astro";
+import Header from "@/components/header/Header.astro";
+import ExternalLink from "@/components/utils/ExternalLink.astro";
+import { SITE_TITLE } from "@/consts";
+import { FaBook, FaCode, FaFlask, FaRegClock, FaSeedling } from "react-icons/fa";
+
+type NowItem = {
+  text: string;
+};
+
+type NowSection = {
+  title: string;
+  blurb: string;
+  icon: typeof FaCode;
+  items: NowItem[];
+};
+
+const sections: NowSection[] = [
+  {
+    title: "Work focus",
+    blurb: "Where most of my hours go right now.",
+    icon: FaCode,
+    items: [
+      {
+        text: "Building and maintaining backend services and data pipelines as an IT Developer at CIMB Niaga.",
+      },
+      {
+        text: "Deepening my Kubernetes and cloud infrastructure skills — orchestration, observability, and keeping things reliable.",
+      },
+    ],
+  },
+  {
+    title: "Building & experimenting",
+    blurb: "Side projects and things I'm tinkering with after hours.",
+    icon: FaFlask,
+    items: [
+      {
+        text: "Iterating on this site — recently added tags, a uses page, reading time, and these Now and TIL sections.",
+      },
+      {
+        text: "Expanding my homelab: self-hosting more services and making the setup fully declarative with Terraform and Ansible.",
+      },
+      {
+        text: "Writing small tools in Go and Rust to scratch my own itches.",
+      },
+    ],
+  },
+  {
+    title: "Learning",
+    blurb: "What I'm actively trying to get better at.",
+    icon: FaSeedling,
+    items: [
+      {
+        text: "Going deeper on distributed systems and the trade-offs behind them.",
+      },
+      {
+        text: "Sharpening my Rust — moving past the borrow checker fights and into real projects.",
+      },
+    ],
+  },
+  {
+    title: "Reading & watching",
+    blurb: "Off the keyboard.",
+    icon: FaBook,
+    items: [
+      {
+        text: "A rotating stack of tech books, manga, and the occasional anime or film when I need to switch off.",
+      },
+    ],
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      description="What I'm focused on, building, and learning right now."
+      title={`Now — ${SITE_TITLE}`}
+    />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header title="Now" />
+    <main class="pt-14 flex-1" transition:animate="fade">
+      <Content className="my-auto mt-6">
+        <div
+          class="bg-orange-300 dark:bg-amber-600 bg-opacity-40 backdrop-blur-2xl text-center py-3 rounded-lg mb-10 mt-6"
+        >
+          <div class="font-title font-bold drop-shadow-lg shadow-black">
+            <FaRegClock className="inline mr-2 mb-1" />
+            What I'm up to these days
+          </div>
+        </div>
+
+        <header class="mb-12">
+          <h1 class="font-title text-4xl font-bold mb-3 text-primary-background">
+            Now
+          </h1>
+          <p class="text-muted-foreground leading-relaxed">
+            A snapshot of what I'm focused on at this point in my life — work,
+            side projects, and what I'm learning. Inspired by
+            <ExternalLink href="https://nownownow.com">
+              Derek Sivers' /now page movement</ExternalLink
+            >. It changes as life does.
+          </p>
+        </header>
+
+        <div class="flex flex-col gap-12">
+          {
+            sections.map(({ title, blurb, icon: Icon, items }) => (
+              <section>
+                <div class="flex items-center gap-3 mb-1">
+                  <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-neutral-700 text-popover">
+                    <Icon className="text-lg" />
+                  </span>
+                  <h2 class="font-title text-2xl font-bold">{title}</h2>
+                </div>
+                <p class="text-sm text-muted-foreground mb-5 ml-12">{blurb}</p>
+
+                <ul class="flex flex-col gap-3">
+                  {items.map(({ text }) => (
+                    <li class="rounded-xl border border-neutral-700 p-4 transition-colors duration-200 hover:border-popover hover:bg-popover/5">
+                      <p class="text-sm text-foreground leading-relaxed">
+                        {text}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          }
+        </div>
+
+        <p class="text-xs text-muted-foreground/70 mt-14 mb-4 italic">
+          Last updated {new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+          })}.
+        </p>
+      </Content>
+      <Footer />
+    </main>
+  </body>
+</html>

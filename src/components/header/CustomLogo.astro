@@ -1,28 +1,29 @@
 ---
 export interface Props {
-    className?: string;
-    width?: number;
-    height?: number;
+  className?: string;
+  height?: number;
+  width?: number;
 }
 
 const { className = "", width = 40, height = 40 } = Astro.props;
 ---
 
 <svg
-    width={width}
-    height={height}
-    class={`inline-block w-5 transition-transform group-hover:rotate-20 ${className}`}
-    viewBox="0 0 445.000000 910.000000"
-    preserveAspectRatio="xMidYMid meet"
-    fill="currentColor"
+  aria-hidden="true"
+  class={`inline-block w-5 transition-transform group-hover:rotate-20 ${className}`}
+  fill="currentColor"
+  height={height}
+  preserveAspectRatio="xMidYMid meet"
+  viewBox="0 0 445.000000 910.000000"
+  width={width}
 >
-    <g
-        transform="translate(0.000000,910.000000) scale(0.100000,-0.100000)"
-        fill="currentColor"
-        stroke="none"
-    >
-        <path
-            d="M1461 8792 c-703 -1189 -1079 -2209 -1151 -3126 -27 -341 3 -696 81
+  <g
+    fill="currentColor"
+    stroke="none"
+    transform="translate(0.000000,910.000000) scale(0.100000,-0.100000)"
+  >
+    <path
+      d="M1461 8792 c-703 -1189 -1079 -2209 -1151 -3126 -27 -341 3 -696 81
 -959 31 -102 87 -237 99 -237 3 0 12 30 19 68 85 470 342 1167 687 1862 241
 487 472 857 563 904 l28 15 100 -102 c54 -56 261 -277 458 -492 198 -214 461
 -497 585 -628 124 -131 246 -262 272 -290 l46 -52 -23 -101 c-89 -375 -153
@@ -34,6 +35,6 @@ l-13 57 -51 -37 c-302 -215 -626 -572 -835 -920 -590 -981 -782 -2369 -531
 684 -699 1044 -922 l82 -51 1 361 c0 377 8 574 50 1216 77 1207 214 2642 334
 3509 l20 144 -22 16 c-77 53 -474 357 -583 446 -520 425 -995 908 -1833 1862
 l-221 253 -100 -168z"
-        ></path>
-    </g>
+    ></path>
+  </g>
 </svg>

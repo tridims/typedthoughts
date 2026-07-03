@@ -1,167 +1,153 @@
 ---
-import BaseHead from "@/components/header/BaseHead.astro";
-import Content from "@/components/body/Content.astro";
-import Header from "@/components/header/Header.astro";
-import Button from "@/components/ui/button.astro";
-import Footer from "@/components/footer/Footer.astro";
-import ExternalLink from "@/components/utils/ExternalLink.astro";
-import SocialLinks from "@/components/utils/SocialLinks.astro";
 import { Image } from "astro:assets";
 import SocialImage from "@/assets/cat.jpeg";
+import Content from "@/components/body/Content.astro";
+import Footer from "@/components/footer/Footer.astro";
+import BaseHead from "@/components/header/BaseHead.astro";
+import Header from "@/components/header/Header.astro";
+import Button from "@/components/ui/button.astro";
+import ExternalLink from "@/components/utils/ExternalLink.astro";
+import SocialLinks from "@/components/utils/SocialLinks.astro";
 ---
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <BaseHead title="About Me!" description="About me description" />
-    </head>
-    <body>
-        <Header title="About me!" />
-        <main class="container mx-auto pt-14" transition:animate="fade">
-            <Content>
-                <div
-                    class="bg-orange-300 dark:bg-amber-600 bg-opacity-40 backdrop-blur-2xl text-center py-3 rounded-lg mb-16 mt-6"
+  <head>
+    <BaseHead description="About me description" title="About Me!" />
+  </head>
+  <body>
+    <Header title="About me!" />
+    <main class="container mx-auto pt-14" transition:animate="fade">
+      <Content>
+        <div
+          class="bg-orange-300 dark:bg-amber-600 bg-opacity-40 backdrop-blur-2xl text-center py-3 rounded-lg mb-16 mt-6"
+        >
+          <div class="font-title font-bold drop-shadow-lg shadow-black">
+            Hello, I'm a Software Engineer from Indonesia!
+          </div>
+        </div>
+
+        <section
+          class="flex flex-col md:flex-row items-center justify-between mb-10"
+        >
+          <div class="text-center md:text-left md:mr-10 mb-8 md:mb-0">
+            <h1
+              class="text-4xl font-bold mb-2 text-primary-background font-title"
+            >
+              Dimas Tri Mustakim
+            </h1>
+            <p class="text-secondary-foreground">
+              Software Developer / Digital Craftsman
+            </p>
+            <ExternalLink class="text-secondary-foreground"
+              >me@dimastri.com</ExternalLink
+            >
+            <div class="mt-4 flex justify-center md:justify-start">
+              <SocialLinks showLabels={true} />
+            </div>
+          </div>
+          <div class="shrink-0">
+            <Image
+              alt="Profile Image"
+              class="rounded-full w-40 h-40 object-cover shadow-lg"
+              src={SocialImage}
+            />
+          </div>
+        </section>
+
+        <section class="mb-10 text-justify">
+          <h2 class="text-2xl font-bold mb-3 font-title">Work</h2>
+          <p class="indent-14 leading-relaxed">
+            I am a passionate developer eager to learn and grow in the field. I
+            thrive in both collaborative group environments and independent work
+            settings. My ultimate career goal is to become an exceptional
+            software engineer, dedicated to building cutting-edge technologies.
+            I possess a knack for quickly adapting to new technologies through
+            leveraging various available resources.
+          </p>
+
+          <p class="indent-14 leading-relaxed mb-8">
+            I am well versed in backend development, devops, and cloud
+            infrastructure. I am proficient in programming languages such as
+            Python, Go and Javascript/Typescript. I also enjoy building things
+            using different tech stack. Beyond technical skills, I actively seek
+            opportunities to develop my management and interpersonal skills.
+            Throughout my career and studies, I have gained gained valuable
+            experience by working on various projects.
+          </p>
+          <div class="flex justify-center">
+            <Button
+              className="mx-auto font-bold bg-orange-300 dark:bg-amber-600"
+              variant="default"
+              ><a
+                class="text-slate-800 dark:text-slate-200"
+                href="mailto:me@dimastri.com"
+                >Contact Me! <span class="ml-2">&gt;</span></a
+              ></Button
+            >
+          </div>
+        </section>
+
+        <section class="mb-10">
+          <h2 class="font-title text-2xl font-bold mb-3">Bio</h2>
+          <div class="flex flex-col gap-2">
+            <div class="flex">
+              <span class="font-semibold w-30 shrink-0">2020-2024</span>
+              <span
+                >Education at
+                <ExternalLink href="https://ub.ac.id"
+                  >Brawijaya University</ExternalLink
+                >, Computer Science Major.
+              </span>
+            </div>
+            <div class="flex">
+              <span class="font-semibold w-30 shrink-0">2022-2024</span>
+              <span>
+                Practicuum assitant & member of
+                <ExternalLink href="https://icn-filkom.ub.ac.id"
+                  >Information Centric Networking Lab</ExternalLink
                 >
-                    <div
-                        class="font-title font-bold drop-shadow-lg shadow-black"
-                    >
-                        Hello, I'm a Software Engineer from Indonesia!
-                    </div>
-                </div>
-
-                <section
-                    class="flex flex-col md:flex-row items-center justify-between mb-10"
+                at
+                <ExternalLink href="https://filkom.ub.ac.id"
+                  >FILKOM UB</ExternalLink
                 >
-                    <div class="text-center md:text-left md:mr-10 mb-8 md:mb-0">
-                        <h1
-                            class="text-4xl font-bold mb-2 text-primary-background font-title"
-                        >
-                            Dimas Tri Mustakim
-                        </h1>
-                        <p class="text-secondary-foreground">
-                            Software Developer / Digital Craftsman
-                        </p>
-                        <ExternalLink class="text-secondary-foreground"
-                            >me@dimastri.com</ExternalLink
-                        >
-                        <div class="mt-4 flex justify-center md:justify-start">
-                            <SocialLinks showLabels={true} />
-                        </div>
-                    </div>
-                    <div class="shrink-0">
-                        <Image
-                            src={SocialImage}
-                            alt="Profile Image"
-                            class="rounded-full w-40 h-40 object-cover shadow-lg"
-                        />
-                    </div>
-                </section>
+              </span>
+            </div>
+            <div class="flex">
+              <span class="font-semibold w-30 shrink-0">2023-2024</span>
+              <span>
+                Student at Bangkit Academy by Google, GoTo, and Traveloka while
+                Creating @SkinCheckAI
+              </span>
+            </div>
+            <div class="flex">
+              <span class="font-semibold w-30 shrink-0">2024-Now</span>
+              <span>
+                Junior IT Developer at
+                <ExternalLink href="https://cimbniaga.co.id"
+                  >CIMB Niaga.</ExternalLink
+                >
+              </span>
+            </div>
+          </div>
+        </section>
 
-                <section class="mb-10 text-justify">
-                    <h2 class="text-2xl font-bold mb-3 font-title">Work</h2>
-                    <p class="indent-14 leading-relaxed">
-                        I am a passionate developer eager to learn and grow in
-                        the field. I thrive in both collaborative group
-                        environments and independent work settings. My ultimate
-                        career goal is to become an exceptional software
-                        engineer, dedicated to building cutting-edge
-                        technologies. I possess a knack for quickly adapting to
-                        new technologies through leveraging various available
-                        resources.
-                    </p>
-
-                    <p class="indent-14 leading-relaxed mb-8">
-                        I am well versed in backend development, devops, and
-                        cloud infrastructure. I am proficient in programming
-                        languages such as Python, Go and Javascript/Typescript.
-                        I also enjoy building things using different tech stack.
-                        Beyond technical skills, I actively seek opportunities
-                        to develop my management and interpersonal skills.
-                        Throughout my career and studies, I have gained gained
-                        valuable experience by working on various projects.
-                    </p>
-                    <div class="flex justify-center">
-                        <Button
-                            variant="default"
-                            className="mx-auto font-bold bg-orange-300 dark:bg-amber-600"
-                            ><a
-                                href="mailto:me@dimastri.com"
-                                class="text-slate-800 dark:text-slate-200"
-                                >Contact Me! <span class="ml-2">&gt;</span></a
-                            ></Button
-                        >
-                    </div>
-                </section>
-
-                <section class="mb-10">
-                    <h2 class="font-title text-2xl font-bold mb-3">Bio</h2>
-                    <div class="flex flex-col gap-2">
-                        <div class="flex">
-                            <span class="font-semibold w-30 shrink-0"
-                                >2020-2024</span
-                            >
-                            <span
-                                >Education at <ExternalLink
-                                    href="https://ub.ac.id"
-                                    >Brawijaya University</ExternalLink
-                                >, Computer Science Major.
-                            </span>
-                        </div>
-                        <div class="flex">
-                            <span class="font-semibold w-30 shrink-0"
-                                >2022-2024</span
-                            >
-                            <span>
-                                Practicuum assitant & member of <ExternalLink
-                                    href="https://icn-filkom.ub.ac.id"
-                                    >Information Centric Networking Lab</ExternalLink
-                                > at <ExternalLink
-                                    href="https://filkom.ub.ac.id"
-                                    >FILKOM UB</ExternalLink
-                                >
-                            </span>
-                        </div>
-                        <div class="flex">
-                            <span class="font-semibold w-30 shrink-0"
-                                >2023-2024</span
-                            >
-                            <span>
-                                Student at Bangkit Academy by Google, GoTo, and
-                                Traveloka while Creating @SkinCheckAI
-                            </span>
-                        </div>
-                        <div class="flex">
-                            <span class="font-semibold w-30 shrink-0"
-                                >2024-Now</span
-                            >
-                            <span>
-                                Junior IT Developer at <ExternalLink
-                                    href="https://cimbniaga.co.id"
-                                    >CIMB Niaga.</ExternalLink
-                                >
-                            </span>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="mb-10 text-justify">
-                    <h2 class="font-title text-2xl font-bold mb-3">I ❤️</h2>
-                    <p class="indent-14 leading-relaxed">
-                        My hobbies are quite diverse, and I particularly enjoy
-                        building things using a wide range of tech stacks. I
-                        love exploring various tech-related subjects, trying out
-                        different technologies, and creating small projects. In
-                        my free time, I find joy in experimenting with and
-                        utilizing different programming languages, deploying and
-                        exploring a variety of open-source applications that
-                        catch my attention, and building my own mini-lab on my
-                        computer. Additionally, I also like playing games,
-                        reading books, manga, and watching movies, anime, as
-                        well as youtube.
-                    </p>
-                </section>
-            </Content>
-            <Footer />
-        </main>
-    </body>
+        <section class="mb-10 text-justify">
+          <h2 class="font-title text-2xl font-bold mb-3">I ❤️</h2>
+          <p class="indent-14 leading-relaxed">
+            My hobbies are quite diverse, and I particularly enjoy building
+            things using a wide range of tech stacks. I love exploring various
+            tech-related subjects, trying out different technologies, and
+            creating small projects. In my free time, I find joy in
+            experimenting with and utilizing different programming languages,
+            deploying and exploring a variety of open-source applications that
+            catch my attention, and building my own mini-lab on my computer.
+            Additionally, I also like playing games, reading books, manga, and
+            watching movies, anime, as well as youtube.
+          </p>
+        </section>
+      </Content>
+      <Footer />
+    </main>
+  </body>
 </html>

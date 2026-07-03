@@ -1,0 +1,29 @@
+---
+title: "Limiting concurrency with errgroup.SetLimit"
+pubDate: "2026-06-18"
+description: "Go's errgroup can cap how many goroutines run at once, so you don't need a separate semaphore channel."
+tags: ["Go", "Concurrency"]
+---
+
+I used to reach for a buffered channel as a semaphore whenever I wanted to
+bound the number of goroutines fanning out from an `errgroup.Group`. Turns out
+`errgroup` has had this built in since Go 1.18.
+
+```go
+g, ctx := errgroup.WithContext(ctx)
+g.SetLimit(8) // at most 8 active goroutines
+
+for _, job := range jobs {
+    job := job
+    g.Go(func() error {
+        return process(ctx, job)
+    })
+}
+
+if err := g.Wait(); err != nil {
+    return err
+}
+```
+
+`SetLimit` blocks `g.Go` until a slot frees up, which keeps memory predictable
+when the job list is large. Use `g.TryGo` if you want the non-blocking variant.
