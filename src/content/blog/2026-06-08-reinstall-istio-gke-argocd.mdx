@@ -1,0 +1,191 @@
+---
+title: "Reinstalling Istio on GKE Using ArgoCD"
+author: "Dimas Tri Mustakim"
+pubDate: "2026-06-08"
+categories: ["Istio", "Kubernetes", "ArgoCD", "GitOps", "GKE"]
+tags: ["Istio", "Kubernetes", "ArgoCD", "GitOps", "GKE"]
+description: "A step-by-step guide to migrating an existing Istio installation on GKE to be managed by ArgoCD using Helm charts. Covers backing up resources, reserving the gateway IP, creating ArgoCD Application manifests, and cleanly uninstalling and reinstalling Istio."
+shorts: |
+  > We used Istio before ArgoCD. Here's how I reinstalled Istio on GKE with ArgoCD without losing the previous configurations.
+---
+
+Our team started adopting GitOps practices to manage everything running in our GKE clusters, and we chose ArgoCD for the job. One of the tasks that fell on me was migrating the existing Istio installation to be managed by ArgoCD. It sounds daunting at first, but after going through it, it's surprisingly straightforward.
+
+## Backing Up Istio Resources
+
+Before touching anything, export all existing Istio CRD configs across all namespaces. This gives you a safety net to restore from if something goes sideways.
+
+```bash
+kubectl get gateway -A -o yaml > istio-gateways-backup.yaml
+kubectl get virtualservice -A -o yaml > istio-virtualservices-backup.yaml
+kubectl get destinationrule -A -o yaml > istio-destinationrules-backup.yaml
+kubectl get serviceentry -A -o yaml > istio-serviceentries-backup.yaml
+kubectl get authorizationpolicy -A -o yaml > istio-authorizationpolicies-backup.yaml
+kubectl get peerauthentication -A -o yaml > istio-peerauthentications-backup.yaml
+kubectl get requestauthentication -A -o yaml > istio-requestauthentications-backup.yaml
+kubectl get envoyfilter -A -o yaml > istio-envoyfilters-backup.yaml
+```
+
+To clean up the exported YAML, you can pipe the commands through [`kubectl-neat`](https://github.com/itaysk/kubectl-neat) — it strips out the managed fields and other noise that makes diffs unreadable.
+
+## Making Sure the IP is Reserved
+
+To keep running applications unaffected, the gateway IP must stay the same after reinstall. Make sure the IP address used by your ingress gateway is reserved as a static IP in Google Cloud Console. You'll reference it explicitly in the ArgoCD Application manifest later.
+
+## Creating ArgoCD Application Manifests
+
+To install Istio via ArgoCD, I use the official Helm charts. There are three charts to install in order: `base`, `istiod`, and `gateway`.
+
+First, add the Istio Helm repo:
+
+```bash
+helm repo add istio https://istio-release.storage.googleapis.com/charts
+helm repo update
+```
+
+### 1. Base
+
+The `base` chart installs all the CRDs that Istio requires. This must go first because the other charts depend on those CRDs being present.
+
+```yaml title="istio-base.yaml"
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-base
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: base
+    targetRevision: 1.25.2
+    helm:
+      valuesObject:
+        global:
+          istioNamespace: istio-system
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  ignoreDifferences:
+    - group: ""
+      kind: ValidatingWebhookConfiguration
+      name: istiod-default-validator
+      jsonPointers:
+        - /webhooks/0/failurePolicy
+```
+
+You might also want to move the `valuesObject` content into a separate values file — I've read that's considered best practice for keeping manifests clean.
+
+### 2. Istio Discovery (istiod)
+
+```yaml title="istio-discovery.yaml"
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-discovery
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: istiod
+    targetRevision: 1.25.2
+    helm:
+      valuesObject:
+        autoscaleEnabled: true
+        autoscaleMin: 1
+        autoscaleMax: 5
+        rollingMaxSurge: 100%
+        rollingMaxUnavailable: 25%
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+```
+
+### 3. Istio IngressGateway
+
+Notice that we pin the `loadBalancerIP` to the reserved address from the earlier step, ensuring the same IP is used after reinstall.
+
+```yaml title="istio-ingressgateway.yaml"
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-ingressgateway
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: gateway
+    targetRevision: 1.25.2
+    helm:
+      valuesObject:
+        service:
+          annotations:
+            networking.gke.io/load-balancer-type: Internal
+            networking.gke.io/internal-load-balancer-allow-global-access: "true"
+          loadBalancerIP: <YOUR_RESERVED_IP>
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+```
+
+> **Note:** If you're running Istio in ambient mode with CNI, you'll also need to install the `cni` and `ztunnel` charts as a second step, before `istiod`.
+
+## Uninstalling Istio
+
+With the backups done and the ArgoCD manifests ready, go ahead and uninstall the existing Istio installation:
+
+```bash
+istioctl uninstall --purge
+```
+
+## Committing Manifests to ArgoCD Repo
+
+Commit the three Application manifests to your GitOps repository. ArgoCD will pick them up and start syncing. Wait for all three apps to reach a healthy state.
+
+After that, expect some errors — fix and debug them as they come. The most common one I ran into was namespaces losing their Istio injection label.
+
+## Verifying Istio Injection Labels
+
+Check which namespaces have the injection label:
+
+```bash
+kubectl get ns -L istio-injection
+```
+
+Make sure the correct namespaces are labeled `enabled`. If any are missing, re-apply the label:
+
+```bash
+kubectl label namespace <YOUR_NAMESPACE> istio-injection=enabled
+```
+
+That's it. Once the injection labels are correct and all ArgoCD apps are synced and healthy, the migration is done.
