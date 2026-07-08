@@ -1,0 +1,71 @@
+---
+title: "Setting Up Warp Terminal and PowerShell on a Windows Work Laptop"
+author: "Dimas Tri Mustakim"
+pubDate: "2026-07-08"
+updateDate: "2026-07-08"
+categories: ["PowerShell", "Warp", "Windows", "DevTools"]
+tags: ["PowerShell", "Warp", "Windows", "DevTools"]
+description: "Git Bash on Windows is notoriously slow because it translates bash commands to Win32 calls at runtime, making every keystroke feel heavier than it should. This article shows how to replace it on a corporate machine — without admin rights — by pairing a portable PowerShell installation with Warp Terminal, plus how to fix the execution policy that blocks the startup script on first launch."
+shorts: |
+    > Turns out Git Bash is slow by design — here's how to swap it out for Warp Terminal and portable PowerShell on a locked-down Windows work machine without touching admin settings.
+---
+
+I've been using Git Bash on my work laptop for a while, and it's painfully slow. Apparently the reason is that Git Bash has to translate bash commands into something Windows understands at runtime, which adds noticeable latency to everything. A colleague pointed this out and it immediately made sense. I wanted something better, but on a corporate machine you usually can't just install things freely.
+
+Then I found out Warp Terminal now has a working Windows build. I had tried it before and it wouldn't run properly, but the current version works well. I paired it with a portable version of PowerShell (no installer needed), and the combination is genuinely good. It's not zsh or fish, but it's a huge step up from Git Bash on Windows.
+
+Here's how to set it up.
+
+## Install Portable PowerShell
+
+The portable version of PowerShell lets you run `pwsh` without installing anything system-wide — useful on a corporate machine where you might not have admin rights.
+
+1. Go to the [PowerShell releases page](https://github.com/PowerShell/PowerShell/releases) and download the ZIP for the latest stable release. Look for a file named something like `PowerShell-7.x.x-win-x64.zip`.
+
+2. Extract the ZIP into a folder of your choice. A path like `C:\Users\<YOUR_USERNAME>\tools\pwsh` works well.
+
+3. Open the Start menu and search for **"Edit the environment variables for your account"**.
+
+4. Under **User variables**, select **Path** and click **Edit**.
+
+5. Click **New** and paste the path to the folder where `pwsh.exe` lives (e.g. `C:\Users\<YOUR_USERNAME>\tools\pwsh`).
+
+6. Click OK to save. Open a new terminal and verify with:
+
+```powershell
+pwsh --version
+```
+
+## Install Warp Terminal
+
+Warp is available via [scoop](https://scoop.sh), which is the easiest route on Windows:
+
+```powershell
+scoop install warp-terminal
+```
+
+Alternatively, grab the installer directly from [warp.dev](https://www.warp.dev).
+
+## Fix the PowerShell Execution Policy
+
+When you first open a PowerShell session inside Warp, you might not see a prompt immediately. After a few seconds, a notice will appear in the top-right corner saying something like **"See the startup script"** — click it.
+
+You'll see that the startup script is being blocked by an execution policy restriction. Double-click on the blocked item and press Enter to dismiss it for now so you can type in the terminal.
+
+To fix it properly, run the following and enter `A` (Yes to All) when prompted:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+You can verify the current state of all policies with:
+
+```powershell
+Get-ExecutionPolicy -List
+```
+
+Once that's set, new Warp sessions will load your PowerShell profile cleanly without any blocked script warnings.
+
+## Done
+
+That's it. Warp handles the terminal UI nicely (block-based input, decent history search, AI features if you want them) and `pwsh` runs natively on Windows without the translation overhead that makes Git Bash feel sluggish. Not my first choice compared to zsh or fish, but for a Windows work machine it's a comfortable setup.
