@@ -61,7 +61,7 @@ typedthoughts/
 
 ## 🧹 Linting & Formatting
 
-This project uses the **[Oxc](https://oxc.rs)** toolchain: **oxlint** for linting and **oxfmt** for formatting. **[Ultracite](https://github.com/haydenbleasel/ultracite)** supplies the base presets — a strict, opinionated ruleset.
+This project uses the **[Oxc](https://oxc.rs)** toolchain: **oxlint** for linting and **oxfmt** for formatting. The rules are hand-picked, with no preset package in between.
 
 ```bash
 # Lint
@@ -76,10 +76,6 @@ bunx oxfmt --check .
 # Format
 bunx oxfmt .
 ```
-
-The lint config lives in `oxlint.config.ts`. It extends the `core`, `react`, `svelte`, and `astro` presets from Ultracite. The format config lives in `oxfmt.config.ts`. It enables Svelte formatting and Tailwind class sorting.
-
-Note: oxfmt does not support `.astro` files yet, and oxlint only reads the component script. The Astro VS Code extension formats `.astro` templates instead.
 
 ## 🎨 Design Philosophy
 
