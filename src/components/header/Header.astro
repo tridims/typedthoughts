@@ -33,6 +33,12 @@ import ThemeToggle from "./ThemeToggle.astro";
       const y = window.scrollY;
       const delta = y - lastY;
 
+      // Another script (for example an anchor jump) keeps the header hidden.
+      if (window.__headerScrollLock) {
+        lastY = y;
+        return;
+      }
+
       if (y <= 0) {
         header.classList.remove("-translate-y-full");
         lastY = y;
