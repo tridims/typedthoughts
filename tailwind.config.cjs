@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        rubik: ["Rubik", "sans-serif"],
-        karla: ["Karla", "sans-serif"],
-        title: ["Rubik", "sans-serif"],
+        rubik: ["system-ui", "sans-serif"],
+        karla: ["system-ui", "sans-serif"],
+        title: ["system-ui", "sans-serif"],
       },
     },
   },
