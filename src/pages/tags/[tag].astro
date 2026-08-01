@@ -31,7 +31,7 @@ export async function getStaticPaths() {
           (t) => t.toLowerCase().replace(/\s+/g, "-") === slug
         )
       )
-      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+      .toSorted((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
     return {
       params: { tag: slug },

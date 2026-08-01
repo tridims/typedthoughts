@@ -1,5 +1,6 @@
-import { getCollection } from "astro:content";
 import { OGImageRoute } from "astro-og-canvas";
+import { getCollection } from "astro:content";
+
 import { SITE_TITLE } from "@/consts";
 
 // Build-time Open Graph image generation.
@@ -51,7 +52,12 @@ const pages: Record<string, OGPage> = Object.fromEntries([
 function buildSubtitle(page: OGPage): string {
   const parts = [SITE_TITLE, dateFormatter.format(page.pubDate)];
   if (page.tags && page.tags.length > 0) {
-    parts.push(page.tags.slice(0, 3).map((tag) => `#${tag}`).join("  "));
+    parts.push(
+      page.tags
+        .slice(0, 3)
+        .map((tag) => `#${tag}`)
+        .join("  ")
+    );
   }
   return parts.join("   ·   ");
 }

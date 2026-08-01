@@ -28,7 +28,7 @@ for (const post of allPosts) {
 }
 
 // Sort alphabetically by label
-const tags = [...tagMap.entries()].sort((a, b) =>
+const tags = [...tagMap.entries()].toSorted((a, b) =>
   a[1].label.localeCompare(b[1].label)
 );
 ---

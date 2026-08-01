@@ -1,6 +1,6 @@
 # TypedThoughts 💭
 
-> *Where ideas meet code and thoughts become reality*
+> _Where ideas meet code and thoughts become reality_
 
 Welcome to my little corner of the internet! This is my personal website built with love, caffeine, and a healthy dose of curiosity. It's a space where I share my thoughts, experiences, and whatever happens to be bouncing around in my head.
 
@@ -80,8 +80,9 @@ bunx oxfmt .
 ## 🎨 Design Philosophy
 
 This site embraces:
+
 - **Simplicity** - Clean, distraction-free reading
-- **Performance** - Fast loading times and smooth interactions  
+- **Performance** - Fast loading times and smooth interactions
 - **Accessibility** - Everyone should be able to enjoy the content
 - **Personal Touch** - It's my space, so it reflects who I am
 
@@ -91,4 +92,4 @@ MIT License - feel free to fork, modify, and make it your own!
 
 ---
 
-*Made with ❤️ and probably too much coffee*
+_Made with ❤️ and probably too much coffee_
