@@ -61,23 +61,25 @@ typedthoughts/
 
 ## 🧹 Linting & Formatting
 
-This project uses **[Biome](https://biomejs.dev)** for linting and formatting, with **[Ultracite](https://github.com/haydenbleasel/ultracite)** as the base config — a strict, opinionated ruleset built on top of Biome.
+This project uses the **[Oxc](https://oxc.rs)** toolchain: **oxlint** for linting and **oxfmt** for formatting. **[Ultracite](https://github.com/haydenbleasel/ultracite)** supplies the base presets — a strict, opinionated ruleset.
 
 ```bash
-# Check for lint/format issues
-bunx biome check .
+# Lint
+bunx oxlint .
 
-# Apply safe auto-fixes
-bunx biome check --write .
+# Lint with auto-fixes
+bunx oxlint --fix .
 
-# Format only
-bunx biome format --write .
+# Check formatting without writing
+bunx oxfmt --check .
 
-# Lint only
-bunx biome lint --write .
+# Format
+bunx oxfmt .
 ```
 
-The config lives in `biome.jsonc`. It extends `ultracite/biome/core` and `ultracite/biome/astro`, with a small override to allow PascalCase filenames in `.astro` components (which is the Astro convention).
+The lint config lives in `oxlint.config.ts`. It extends the `core`, `react`, `svelte`, and `astro` presets from Ultracite. The format config lives in `oxfmt.config.ts`. It enables Svelte formatting and Tailwind class sorting.
+
+Note: oxfmt does not support `.astro` files yet, and oxlint only reads the component script. The Astro VS Code extension formats `.astro` templates instead.
 
 ## 🎨 Design Philosophy
 

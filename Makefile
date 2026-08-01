@@ -6,9 +6,9 @@ help:
 	@echo "  dev       Start the Astro dev server"
 	@echo "  build     Build the site for production"
 	@echo "  preview   Preview the production build"
-	@echo "  check     Run Biome checks (lint + format, no writes)"
-	@echo "  lint      Run Biome lint with autofix"
-	@echo "  format    Run Biome format with autofix"
+	@echo "  check     Run oxlint + oxfmt checks (no writes)"
+	@echo "  lint      Run oxlint with autofix"
+	@echo "  format    Run oxfmt with autofix"
 	@echo "  clean     Remove build artifacts and caches"
 
 install:
@@ -25,13 +25,14 @@ preview:
 	bun run preview
 
 check:
-	bunx biome check .
+	bunx oxlint .
+	bunx oxfmt --check .
 
 lint:
-	bunx biome lint --write .
+	bunx oxlint --fix .
 
 format:
-	bunx biome format --write .
+	bunx oxfmt .
 
 clean:
 	rm -rf dist .astro/data-store.json
