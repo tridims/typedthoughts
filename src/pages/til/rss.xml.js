@@ -1,9 +1,10 @@
-import { getCollection } from "astro:content";
 import rss from "@astrojs/rss";
+import { getCollection } from "astro:content";
+
 import { SITE_TITLE } from "../../consts";
 
 export async function GET(context) {
-  const entries = (await getCollection("til")).sort(
+  const entries = (await getCollection("til")).toSorted(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
 

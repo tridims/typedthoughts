@@ -3,7 +3,10 @@ import Logo from "./Logo.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 ---
 
-<header class="fixed w-full p-1 z-20 backdrop-blur-md">
+<header
+  id="site-header"
+  class="fixed w-full px-1 py-[0.2rem] z-20 backdrop-blur-md transition-transform duration-300 ease-out"
+>
   <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
     <nav class="flex items-center gap-3 text-base">
       <Logo />
@@ -12,3 +15,61 @@ import ThemeToggle from "./ThemeToggle.astro";
     </nav>
   </div>
 </header>
+
+<script is:inline>
+  (() => {
+    if (window.__siteHeaderScrollInit) return;
+    window.__siteHeaderScrollInit = true;
+
+    let lastY = window.scrollY;
+    let ticking = false;
+    const threshold = 8;
+
+    const update = () => {
+      ticking = false;
+      const header = document.getElementById("site-header");
+      if (!header) return;
+
+      const y = window.scrollY;
+      const delta = y - lastY;
+
+      // Another script (for example an anchor jump) keeps the header hidden.
+      if (window.__headerScrollLock) {
+        lastY = y;
+        return;
+      }
+
+      if (y <= 0) {
+        header.classList.remove("-translate-y-full");
+        lastY = y;
+        return;
+      }
+
+      if (Math.abs(delta) > threshold) {
+        if (delta > 0) {
+          header.classList.add("-translate-y-full");
+        } else {
+          header.classList.remove("-translate-y-full");
+        }
+        lastY = y;
+      }
+    };
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+
+    document.addEventListener("astro:page-load", () => {
+      lastY = window.scrollY;
+      const header = document.getElementById("site-header");
+      if (header) header.classList.remove("-translate-y-full");
+    });
+  })();
+</script>

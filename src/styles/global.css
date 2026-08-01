@@ -12,7 +12,7 @@
 @config "../../tailwind.config.cjs";
 
 body {
-  font-family: "Karla", sans-serif;
+  font-family: system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-wrap: break-word;
   text-rendering: optimizeLegibility;
@@ -47,8 +47,8 @@ body {
   --sidebar-accent-foreground: oklch(0.3729 0.0306 259.7328);
   --sidebar-border: oklch(0.9073 0.053 306.0902);
   --sidebar-ring: oklch(0.709 0.1592 293.5412);
-  --font-sans: Rubik, sans-serif;
-  --font-serif: Karla, sans-serif;
+  --font-sans: system-ui, sans-serif;
+  --font-serif: system-ui, sans-serif;
   --font-mono: IBM Plex Mono, monospace;
   --radius: 1.5rem;
   --shadow-2xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
@@ -99,8 +99,8 @@ body {
   --sidebar-accent-foreground: oklch(0.8717 0.0093 258.3382);
   --sidebar-border: oklch(0.3416 0.0444 308.8496);
   --sidebar-ring: oklch(0.7874 0.1179 295.7538);
-  --font-sans: Open Sans, sans-serif;
-  --font-serif: Source Serif 4, serif;
+  --font-sans: system-ui, sans-serif;
+  --font-serif: system-ui, sans-serif;
   --font-mono: IBM Plex Mono, monospace;
   --radius: 1.5rem;
   --shadow-2xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
@@ -184,7 +184,7 @@ body {
 
   /* You can also move your font definitions here for better organization */
   body {
-    font-family: "Rubik", sans-serif;
+    font-family: system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }

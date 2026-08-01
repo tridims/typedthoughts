@@ -103,7 +103,7 @@
 
     const transition = document.startViewTransition(performTransition);
 
-    transition.finished.then(() => {
+    transition.finished.finally(() => {
       const styleEl = document.getElementById(styleId);
       if (styleEl) {
         styleEl.remove();

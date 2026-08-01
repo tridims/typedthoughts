@@ -7,7 +7,7 @@ import BaseHead from "@/components/header/BaseHead.astro";
 import Header from "@/components/header/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/consts";
 
-const allPosts = (await getCollection("blog")).sort(
+const allPosts = (await getCollection("blog")).toSorted(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 // Display only the latest 3 posts on the index page

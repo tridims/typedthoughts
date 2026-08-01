@@ -1,4 +1,5 @@
 ---
+import type { MarkdownHeading } from "astro";
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import Tag from "@/components/blogs/Tag.astro";
@@ -11,6 +12,7 @@ import FormattedDate from "@/components/utils/FormattedDate.astro";
 type Props = CollectionEntry<"blog">["data"] & {
   readingTime?: string;
   ogImage?: string;
+  headings?: MarkdownHeading[];
 };
 
 const {
@@ -23,7 +25,15 @@ const {
   tags,
   readingTime,
   ogImage,
+  headings = [],
 } = Astro.props;
+
+const tocItems = headings.filter(
+  (heading) => heading.depth >= 2 && heading.depth <= 3,
+);
+const hasToc = tocItems.length > 0;
+const tocLinkClass =
+  "block border-l-2 border-transparent py-0.5 text-muted-foreground transition-colors duration-200 hover:text-orange-500";
 ---
 
 <html lang="en">
@@ -111,6 +121,7 @@ const {
 
         <!-- Post Content: Styled with Tailwind Typography -->
         <div
+          id="post-content"
           class="prose prose-lg dark:prose-invert max-w-none 
                         prose-headings:text-foreground 
                         prose-p:text-foreground
@@ -124,7 +135,211 @@ const {
           <slot />
         </div>
       </article>
+
+      {hasToc && (
+        <>
+          {/* Table of contents: sticky on desktop */}
+          <aside class="hidden xl:block fixed top-28 right-6 w-64 max-h-[70vh] overflow-y-auto overscroll-contain">
+            <p class="mb-3 font-semibold text-foreground text-xs uppercase tracking-wider">
+              On this page
+            </p>
+            <nav aria-label="Table of contents">
+              <ul class="space-y-2 border-l border-border text-sm">
+                {tocItems.map((heading) => (
+                  <li>
+                    <a
+                      class={`${tocLinkClass} ${heading.depth === 3 ? "pl-6" : "pl-4"}`}
+                      data-toc-link={heading.slug}
+                      href={`#${heading.slug}`}
+                    >
+                      {heading.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+
+          {/* Table of contents: collapsible on mobile */}
+          <div class="xl:hidden">
+            <button
+              aria-controls="toc-mobile-panel"
+              aria-expanded="false"
+              aria-label="Toggle table of contents"
+              class="fixed right-4 bottom-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-lg"
+              data-toc-toggle
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M4 6h16M4 12h16M4 18h10" stroke-linecap="round" />
+              </svg>
+            </button>
+
+            <div
+              class="fixed right-4 bottom-20 z-50 hidden max-h-[60vh] w-72 overflow-y-auto overscroll-contain rounded-xl border border-border bg-background p-4 shadow-xl"
+              data-toc-panel
+              id="toc-mobile-panel"
+            >
+              <p class="mb-3 font-semibold text-foreground text-xs uppercase tracking-wider">
+                On this page
+              </p>
+              <nav aria-label="Table of contents">
+                <ul class="space-y-2 border-l border-border text-sm">
+                  {tocItems.map((heading) => (
+                    <li>
+                      <a
+                        class={`${tocLinkClass} ${heading.depth === 3 ? "pl-6" : "pl-4"}`}
+                        data-toc-link={heading.slug}
+                        href={`#${heading.slug}`}
+                      >
+                        {heading.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </>
+      )}
     </main>
     <Footer />
+
+    <style is:global>
+      #post-content :is(h2, h3) {
+        scroll-margin-top: 5rem;
+      }
+    </style>
+
+    <script>
+      const SCROLL_OFFSET = 80;
+      const SPY_OFFSET = 90;
+
+      function setupToc() {
+        const links = Array.from(
+          document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"),
+        );
+        if (links.length === 0) return;
+        if (links[0].dataset.tocBound === "true") return;
+        links[0].dataset.tocBound = "true";
+
+        const toggle =
+          document.querySelector<HTMLButtonElement>("[data-toc-toggle]");
+        const panel = document.querySelector<HTMLElement>("[data-toc-panel]");
+
+        const ids = [...new Set(links.map((link) => link.dataset.tocLink ?? ""))];
+        const headings = ids
+          .map((id) => document.getElementById(id))
+          .filter((el): el is HTMLElement => el !== null);
+        if (headings.length === 0) return;
+
+        let lockedId: string | null = null;
+        let releaseTimer: number | undefined;
+        let ticking = false;
+
+        function markActive(id: string) {
+          for (const link of links) {
+            const active = link.dataset.tocLink === id;
+            link.classList.toggle("text-orange-500", active);
+            link.classList.toggle("border-orange-500", active);
+            link.classList.toggle("border-transparent", !active);
+            link.classList.toggle("text-muted-foreground", !active);
+          }
+        }
+
+        function currentId() {
+          const atBottom =
+            window.innerHeight + window.scrollY >=
+            document.documentElement.scrollHeight - 2;
+          if (atBottom) return headings[headings.length - 1].id;
+
+          let id = headings[0].id;
+          for (const heading of headings) {
+            if (heading.getBoundingClientRect().top - SPY_OFFSET > 0) break;
+            id = heading.id;
+          }
+          return id;
+        }
+
+        function scheduleRelease() {
+          window.clearTimeout(releaseTimer);
+          releaseTimer = window.setTimeout(() => {
+            lockedId = null;
+            (window as any).__headerScrollLock = false;
+            markActive(currentId());
+          }, 150);
+        }
+
+        function onScroll() {
+          if (lockedId !== null) {
+            scheduleRelease();
+            return;
+          }
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            ticking = false;
+            markActive(currentId());
+          });
+        }
+
+        function closePanel() {
+          panel?.classList.add("hidden");
+          toggle?.setAttribute("aria-expanded", "false");
+        }
+
+        for (const link of links) {
+          link.addEventListener("click", (event) => {
+            const id = link.dataset.tocLink;
+            const target = id ? document.getElementById(id) : null;
+            if (!id || !target) return;
+
+            // Scroll the window only, so the list itself does not move.
+            event.preventDefault();
+            lockedId = id;
+            markActive(id);
+            closePanel();
+
+            // Keep the header hidden while the page jumps.
+            const header = document.getElementById("site-header");
+            header?.classList.add("-translate-y-full");
+            (window as any).__headerScrollLock = true;
+
+            const top =
+              target.getBoundingClientRect().top +
+              window.scrollY -
+              SCROLL_OFFSET;
+            window.scrollTo({ top, behavior: "smooth" });
+            history.replaceState(null, "", `#${id}`);
+            scheduleRelease();
+          });
+        }
+
+        toggle?.addEventListener("click", () => {
+          const open = panel?.classList.toggle("hidden") === false;
+          toggle.setAttribute("aria-expanded", String(open));
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!panel || panel.classList.contains("hidden")) return;
+          const target = event.target as HTMLElement;
+          if (target.closest("[data-toc-panel], [data-toc-toggle]")) return;
+          closePanel();
+        });
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        markActive(currentId());
+      }
+
+      setupToc();
+      document.addEventListener("astro:page-load", setupToc);
+    </script>
   </body>
 </html>

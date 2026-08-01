@@ -20,7 +20,7 @@ export function getReadingTime(body: string | undefined): number {
     .replace(/`[^`]*`/g, "") // inline code
     .replace(/!\[[^\]]*\]\([^)]*\)/g, "") // images
     .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // links -> keep link text
-    .replace(/[#>*_~\-]/g, " "); // misc markdown punctuation
+    .replace(/[#>*_~-]/g, " "); // misc markdown punctuation
 
   const words = text.split(/\s+/).filter(Boolean).length;
 

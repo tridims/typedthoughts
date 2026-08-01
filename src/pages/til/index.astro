@@ -8,7 +8,7 @@ import TilListItem from "@/components/til/TilListItem.astro";
 import { SITE_TITLE } from "@/consts";
 import { Rss } from "@lucide/astro";
 
-const entries = (await getCollection("til")).sort(
+const entries = (await getCollection("til")).toSorted(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 ---
