@@ -1,0 +1,534 @@
+---
+title: "Building a Self-Hosted Observability Stack on Kubernetes with Grafana, Loki, Tempo, Pyroscope and VictoriaMetrics"
+author: "Dimas Tri Mustakim"
+pubDate: "2026-08-03"
+categories: ["Kubernetes", "Observability", "Grafana", "OpenTelemetry", "Helm"]
+tags: ["Kubernetes", "Observability", "Grafana", "OpenTelemetry", "Helm"]
+description: "A walkthrough of deploying a full self-hosted observability backend on Kubernetes using Helm. It covers Grafana for dashboards, Loki for logs, Tempo for traces, Pyroscope for profiles and VictoriaMetrics for metrics, plus the OpenTelemetry Collector and Grafana Alloy as signal gateways."
+shorts: |
+    > Four signals, five backends, one Helm-shaped afternoon: how I run logs, metrics, traces and profiles without paying a vendor.
+---
+
+Here's a walkthrough on how I deploy and set up Loki (logs), Grafana (dashboards), Tempo (traces), Pyroscope (profiles) and VictoriaMetrics (metrics) as the observability backend for the applications I manage. I picked these because each one is good at the job it does, and because they are free to self-host on my own infrastructure. They also have trusted companies behind them, so I do not have to worry about maintenance, bug fixes, or the project turning into abandonware.
+
+## Helm charts and values
+
+I use Helm charts to deploy the components. The charts come from the Grafana community repo and the VictoriaMetrics repo. Below are the values files I use for each app, with some details redacted.
+
+### Grafana
+
+```yaml title="grafana-values.yaml"
+admin:
+  # admin credentials is saved in Kubernetes secret
+  # You first need to create the secrets based on the value passed on here
+  existingSecret: grafana-admin-credentials
+  userKey: admin-user
+  passwordKey: admin-password
+
+persistence:
+  enabled: true
+  size: 1Gi
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        url: http://loki.monitoring.svc.cluster.local:3100
+        isDefault: false
+        uid: loki
+      - name: Tempo
+        uid: tempo
+        type: tempo
+        url: http://tempo.monitoring:3200
+        isDefault: false
+        jsonData:
+          tracesToLogsV2:
+            datasourceUid: loki
+          lokiSearch:
+            datasourceUid: loki
+          tracesToMetrics:
+            datasourceUid: prometheus
+          serviceMap:
+            datasourceUid: prometheus
+      - name: VictoriaMetrics
+        uid: prometheus
+        type: prometheus
+        url: http://victoria-metrics:8428
+        isDefault: true
+      - name: Pyroscope
+        uid: pyroscope
+        type: grafana-pyroscope-datasource
+        url: http://pyroscope.monitoring.svc.cluster.local:4040
+        isDefault: false
+
+grafana.ini:
+  server:
+    root_url: https://<YOUR_DOMAIN>/
+    serve_from_sub_path: true
+
+resources:
+  limits: {}
+  requests:
+    cpu: 10m
+
+nodeSelector:
+  app: <SPECIFIC_NODE>
+tolerations: {}
+```
+
+### Loki
+
+I chose the single binary / monolithic deployment mode for Loki, because it is enough for my use case. When getting started, I think it is a good idea to start small. Go bigger only when your app already has tons of users, a lot of data to store, and a real need for high availability.
+
+For storage I use a GCS bucket to keep data long term. You can switch this to whatever backend you want. Refer to the Loki storage documentation to pick one.
+
+Here is the minimal values file I use.
+
+```yaml title="loki-values.yaml"
+deploymentMode: Monolithic
+
+loki:
+  auth_enabled: false
+  commonConfig:
+    replication_factor: 1
+  limit_config:
+    reject_old_sample: true
+    reject_old_sample_max_age: 168h
+
+  storage:
+    type: gcs
+    bucketNames:
+      chunks: <BUCKET_NAME>
+      ruler: <BUCKET_NAME>
+      admin: <BUCKET_NAME>
+    gcs:
+      #prefix: logs
+      chunkBufferSize: 0
+      requestTimeout: "10s"
+      enableHttp2: true
+
+  schemaConfig:
+    configs:
+      - from: "2024-04-01"
+        store: tsdb
+        object_store: gcs
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+
+singleBinary:
+  replicas: 1
+  persistance:
+    enabled: false
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "300Mi"
+    limits:
+      cpu: "1000m"
+      memory: "4Gi"
+
+gateway:
+  enabled: false
+lokiCanary:
+  enabled: false
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+test:
+  enabled: false
+
+serviceAccount:
+  create: true
+  name: loki
+  annotations:
+    iam.gke.io/gcp-service-account: <SERVICE_ACCOUNT>
+
+# zeroing out other deployment modes
+write:
+  replicas: 0
+read:
+  replicas: 0
+backend:
+  replicas: 0
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+distributor:
+  replicas: 0
+compactor:
+  replicas: 0
+indexGateway:
+  replicas: 0
+bloomPlanner:
+  replicas: 0
+bloomBuilder:
+  replicas: 0
+bloomGateway:
+  replicas: 0
+```
+
+### Tempo
+
+For Tempo I also picked a GCS bucket as the long term storage for application traces. I enable `metricsGenerator` to derive metrics from trace data. With that you get metrics such as span rate and service structure, which you can explore through the Grafana Drilldown UI.
+
+Here is my values file:
+
+```yaml title="tempo-values.yaml"
+tempo:
+  retention: 720h
+  storage:
+    trace:
+      backend: gcs
+      gcs:
+        bucket_name: <BUCKET_NAME>
+  resources:
+    requests:
+      cpu: 200m
+      memory: 500Mi
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: "http://victoria-metrics.monitoring.svc.cluster.local:8428/api/v1/write"
+  overrides:
+    defaults:
+      metrics_generator:
+        processors:
+          - local-blocks
+          - service-graphs
+          - span-metrics
+
+serviceAccount:
+  create: true
+  name: loki
+  annotations:
+    iam.gke.io/gcp-service-account: <SERVICE_ACCOUNT>
+```
+
+### VictoriaMetrics
+
+I picked VictoriaMetrics because I had a good experience with it before. It is the most lightweight option I know, it ships updates fast, and it fits my use case. I considered Grafana Mimir for metrics, but it turned out to be heavy and it exceeded the resources I have available. The downside of VictoriaMetrics is that GCS is not supported natively as storage. You can mount it with FUSE, but that path has its own drawbacks.
+
+Here is my VictoriaMetrics values file:
+
+```yaml title="victoria-metrics-values.yaml"
+nameOverride: victoria-metrics
+
+server:
+  enabled: true
+  fullnameOverride: victoria-metrics
+  mode: statefulSet # because we use persistent volume with rwo acess modes.
+
+  persistentVolume:
+    size: 2Gi
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
+  scrape:
+    enabled: false
+```
+
+## Collector
+
+### OpenTelemetry Collector
+
+I later replaced the collector with Grafana Alloy. The reason is in its own section below.
+
+I used the OpenTelemetry Collector as the gateway for all signals until I migrated to Grafana Alloy. Every app sends OTel signals as OTLP to the collector. The collector processes them and forwards each signal to the right backend.
+
+Here are the values:
+
+```yaml title="otel-collector-values.yaml"
+mode: deployment
+
+replicaCount: 1
+
+fullnameOverride: otel-collector
+
+image:
+  repository: otel/opentelemetry-collector-contrib
+  tag: "0.145.0"
+
+command:
+  name: otelcol-contrib
+
+presets:
+  hostMetrics:
+    enabled: false
+  kubernetesAttributes:
+    enabled: false
+  kubeletMetrics:
+    enabled: false
+  clusterMetrics:
+    enabled: false
+
+# ── Resources ────────────────────────────────────────────────────────
+resources:
+  requests:
+    cpu: 100m
+    memory: 500Mi
+  limits:
+    memory: 3Gi
+
+useGOMEMLIMIT: true
+
+# ── Ports ────────────────────────────────────────────────────────────
+ports:
+  otlp:
+    enabled: true
+    containerPort: 4317
+    servicePort: 4317
+    hostPort: 4317
+    protocol: TCP
+    appProtocol: grpc
+  otlp-http:
+    enabled: true
+    containerPort: 4318
+    servicePort: 4318
+    hostPort: 4318
+    protocol: TCP
+  jaeger-compact:
+    enabled: false
+  jaeger-thrift:
+    enabled: false
+  jaeger-grpc:
+    enabled: false
+  zipkin:
+    enabled: false
+  metrics:
+    enabled: false
+
+# ── Service ──────────────────────────────────────────────────────────
+service:
+  type: ClusterIP
+
+# ── Collector Configuration ──────────────────────────────────────────
+config:
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: "0.0.0.0:4318"
+        grpc:
+          endpoint: "0.0.0.0:4317"
+    loki:
+      protocols:
+        http:
+          endpoint: "0.0.0.0:3100"
+
+  processors:
+    batch: {}
+    memory_limiter:
+      check_interval: 1s
+      limit_mib: 2000
+    attributes/loki:
+      actions:
+        - action: insert
+          key: loki.format
+          value: raw
+        - action: insert
+          key: loki.attribute.labels
+          value: facility, level, source, host, app, namespace, pod, container, job
+    resource/otel_labels:
+      attributes:
+        - action: upsert
+          key: service.namespace
+          value: "<NAMESPACE>"
+        - action: upsert
+          key: deployment.environment.name
+          value: "development" # or staging, dev, etc.
+    k8sattributes:
+      auth_type: serviceAccount
+      passthrough: false
+      extract:
+        metadata:
+          - k8s.pod.name
+          - k8s.namespace.name
+          - k8s.deployment.name
+          - k8s.node.name
+          - k8s.replicaset.name
+          - k8s.statefulset.name
+          - k8s.daemonset.name
+      pod_association:
+        - sources:
+            - from: resource_attribute
+              name: k8s.pod.ip
+        - sources:
+            - from: connection
+
+  exporters:
+    otlp_grpc/tempo:
+      endpoint: tempo.monitoring:4317
+      tls:
+        insecure: true
+    otlp_http/loki:
+      endpoint: http://loki.monitoring.svc:3100/otlp
+    prometheusremotewrite/victoria_metrics:
+      endpoint: http://victoria-metrics:8428/api/v1/write
+      tls:
+        insecure: true
+      resource_to_telemetry_conversion:
+        enabled: true
+    debug: {}
+
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        processors: [batch, memory_limiter]
+        exporters: [otlp_grpc/tempo]
+      logs:
+        receivers: [loki, otlp]
+        processors: [attributes/loki, batch, memory_limiter]
+        exporters: [otlp_http/loki]
+      metrics:
+        receivers: [otlp]
+        processors: [batch, memory_limiter]
+        exporters: [prometheusremotewrite/victoria_metrics]
+```
+
+### Grafana Alloy
+
+I moved to Grafana Alloy because it has better support for Kubernetes liveness and health checks. That was my deal breaker with the OpenTelemetry Collector. I need those probes because the collector sits behind a load balancer. Alloy also brings extra advantages: support for Pyroscope profiles, a nice UI that helps with debugging, and the ability to replace Fluentd.
+
+Here is my values file:
+
+```yaml title="alloy-values.yaml"
+fullnameOverride: alloy-otlp
+
+controller:
+  type: deployment
+  replicas: 1
+
+alloy:
+  enableReporting: false
+
+  configMap:
+    create: true
+    content: |
+      // ── OTLP receiver ──────────────────────────────────────────────────────
+      otelcol.receiver.otlp "default" {
+        grpc {
+          endpoint = "0.0.0.0:4317"
+        }
+        http {
+          endpoint = "0.0.0.0:80"
+        }
+
+        output {
+          metrics = [otelcol.processor.memory_limiter.default.input]
+          logs    = [otelcol.processor.memory_limiter.default.input]
+          traces  = [otelcol.processor.memory_limiter.default.input]
+        }
+      }
+
+      // ── Memory limiter (first) ─────────────────────────────────────────────
+      otelcol.processor.memory_limiter "default" {
+        check_interval = "1s"
+        limit          = "2000MiB"
+        spike_limit    = "500MiB"
+
+        output {
+          metrics = [otelcol.processor.batch.default.input]
+          logs    = [otelcol.processor.batch.default.input]
+          traces  = [otelcol.processor.batch.default.input]
+        }
+      }
+
+      // ── Batch (after memory limiter) ───────────────────────────────────────
+      otelcol.processor.batch "default" {
+        output {
+          traces  = [otelcol.exporter.otlp.tempo.input]
+          logs    = [otelcol.exporter.otlphttp.loki.input]
+          metrics = [otelcol.exporter.prometheus.default.input]
+        }
+      }
+
+      // ── Exporters ──────────────────────────────────────────────────────────
+      otelcol.exporter.otlp "tempo" {
+        client {
+          endpoint = "tempo.monitoring:4317"
+          tls {
+            insecure = true
+          }
+        }
+      }
+
+      otelcol.exporter.otlphttp "loki" {
+        client {
+          endpoint = "http://loki.monitoring.svc:3100/otlp"
+        }
+      }
+
+      otelcol.exporter.prometheus "default" {
+        resource_to_telemetry_conversion = true
+        forward_to                       = [prometheus.remote_write.victoria_metrics.receiver]
+      }
+
+      prometheus.remote_write "victoria_metrics" {
+        endpoint {
+          url = "http://victoria-metrics:8428/api/v1/write"
+        }
+      }
+
+  # Alloy UI on 8080 (exposed through gateway for the UI route)
+  listenPort: 8080
+
+  extraPorts:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      protocol: "TCP"
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+      protocol: "TCP"
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 500Mi
+    limits:
+      memory: 3Gi
+
+service:
+  enabled: true
+  type: ClusterIP
+```
+
+## Testing
+
+For testing I use `telemetrygen` to send sample signals to the OpenTelemetry endpoint I set up. You can install it from the [opentelemetry-collector-contrib repo](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/cmd/telemetrygen).
+
+Here are the commands I run to push test data:
+
+```bash
+telemetrygen traces \
+  --otlp-endpoint="collector.mydomain.local:443" \
+  --otlp-http \
+  --otlp-http-url-path="//v1/traces" \
+  --duration=30s --rate=5 --service="test-service"
+
+telemetrygen metrics \
+  --otlp-endpoint="collector.mydomain.local:443" \
+  --otlp-http \
+  --otlp-http-url-path="//v1/metrics" \
+  --duration=30s --rate=5 --metric-type=Gauge
+
+telemetrygen logs \
+  --otlp-endpoint="collector.mydomain.local:443" \
+  --otlp-http \
+  --otlp-http-url-path="//v1/logs" \
+  --duration=30s --rate=5 --body="test log from telemetrygen"
+```
