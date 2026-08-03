@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { Rss } from "@lucide/astro";
-import { FaGithub, FaLinkedin, FaMedium } from "react-icons/fa";
+import { FaAward, FaGithub, FaLinkedin, FaMedium } from "react-icons/fa";
 
 import socialImage from "../../assets/cat.jpeg";
 
@@ -23,6 +23,12 @@ const socialLinks = [
     href: "https://medium.com/@tridims",
     icon: FaMedium,
     handle: "@tridims",
+  },
+  {
+    name: "Credly",
+    href: "https://www.credly.com/users/dimas-tri-mustakim/badges/credly",
+    icon: FaAward,
+    handle: "dimas-tri-mustakim",
   },
 ];
 
@@ -78,9 +84,10 @@ const generalHandle = "@tridims"; // Change this to your preferred general handl
             })}
 
   <!-- Middle Row: Other Social Icons -->
-  <div class="flex flex-wrap items-center gap-3 sm:gap-5">
-    {otherLinks.map(({ href, icon: Icon }) => (
+  <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
+    {otherLinks.map(({ name, href, icon: Icon }) => (
                 <a
+                    aria-label={`Visit my ${name} profile`}
                     class="shrink-0 text-foreground transition-colors hover:text-popover"
                     href={href}
                     rel="noopener noreferrer"
